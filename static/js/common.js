@@ -66,9 +66,9 @@
             methods: {
                 selectTab(selectedTab) {
                     this.tabs.forEach(tab => {
-                        tab.isActive = (tab.name == selectedTab.name)
+                        tab.isActive = (tab.name === selectedTab.name)
                     });
-                }
+                },
             }
         });
 
@@ -100,15 +100,27 @@
         const vm = new Vue({
             el: '#config',
             data: {
-                gamers: [1,]
+                currentHash: window.location.hash,
+                gamers: [
+                    {name: 'Gamer 1'},
+                    {name: 'Gamer 2'},
+                    {name: 'Gamer 3'},
+                    {name: 'Gamer 4'},
+                    {name: 'Gamer 1'},
+                    {name: 'Gamer 2'},
+                    {name: 'Gamer 3'},
+                    {name: 'Gamer 4'},
+                ]
             },
-            methods: {}
+            methods: {},
+            mounted() {
+            }
         });
     }
 
-    RPC.connect();
-
     RPC.addEventListener('onconnect', function (e) {
     });
+
+    RPC.connect();
 
 })();

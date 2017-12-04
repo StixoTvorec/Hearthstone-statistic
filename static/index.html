@@ -15,21 +15,25 @@
             <div id="peoples">
                 <tabs>
                     <tab name="Gamers list" :selected="true">
-                        <div>
-                            <h2 class="page-subtitle">Gamers list</h2>
-                            <div class="gamers">
-                                <div v-for="gamer in gamers" class="gamer">
+                        <h2 class="page-subtitle title">Gamers list</h2>
+                        <div class="gamers">
+                            <div v-for="(item, index) in gamers" class="gamer media">
+                                <div class="media-left">
                                     <div class="image">
+                                        <!--<img :src="'/img/users/'+(index+1)+'.png'">-->
                                         <img src="/img/users/1.png">
                                     </div>
-                                    <div class="name field has-addons">
+                                </div>
+                                <div class="name media-content">
+                                    <div class="header field">
+                                        <div class="subtitle">Gamer name <sup>({{ index+1 }})</sup></div>
+                                    </div>
+                                    <div class="field has-addons level">
                                         <div class="control">
-                                            <input class="input" name="name">
+                                            <input class="input" :value="item.name">
                                         </div>
                                         <div class="control">
-                                            <a class="button">
-                                                Accept
-                                            </a>
+                                            <a class="button">Accept</a>
                                         </div>
                                     </div>
                                 </div>
@@ -39,7 +43,11 @@
                     <tab name="Battles list">
                         <div>
                             <h2 class="page-subtitle">Second tab</h2>
-                            This is the content of the second tab.
+                            <div class="battles">
+                                <div v-for="(item, index) in gamers" class="column is-half">
+                                    <h3>{{ item }} {{ index }}</h3>
+                                </div>
+                            </div>
                         </div>
                     </tab>
                     <tab name="Current battle">
