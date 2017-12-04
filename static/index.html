@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru" dir="ltr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="robots" content="noindex">
+    <title>Config</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+<section class="content-wrapper fill-height" id="config">
+    <div class="container">
+        <div class="row">
+            <div id="peoples">
+                <tabs>
+                    <tab name="Gamers list" :selected="true">
+                        <div>
+                            <h2 class="page-subtitle">Gamers list</h2>
+                            <div class="gamers">
+                                <div v-for="gamer in gamers" class="gamer">
+                                    <div class="image">
+                                        <img src="/img/users/1.png">
+                                    </div>
+                                    <div class="name field has-addons">
+                                        <div class="control">
+                                            <input class="input" name="name">
+                                        </div>
+                                        <div class="control">
+                                            <a class="button">
+                                                Accept
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+                    <tab name="Battles list">
+                        <div>
+                            <h2 class="page-subtitle">Second tab</h2>
+                            This is the content of the second tab.
+                        </div>
+                    </tab>
+                    <tab name="Current battle">
+                        <div>
+                            <h2 class="page-subtitle">Custom fragment</h2>
+                            The hash that is appended to the url can be customized.
+                        </div>
+                    </tab>
+                </tabs>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <footer>
+        <div class="container">
+            <div class="row">
+            <b class="btn-group">
+                <a class="button is-primary dotted" target="_blank" href="/gamers.html"><span>gamers</span></a>
+                <a class="button is-primary dotted" target="_blank" href="/statistic.html"><span>statistic</span></a>
+            </b>
+            </div>
+        </div>
+    </footer>
+</section>
+
+<!--Powered by https://github.com/1271-->
+
+<script src="/js/q.min.js"></script>
+<script src="/js/wsrpc.min.js"></script>
+
+<!--<script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
+<script src="https://rawgit.com/vuejs/vue/dev/dist/vue.js"></script>
+
+<script src="/js/common.js"></script>
+</body>
+</html>
