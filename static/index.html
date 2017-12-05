@@ -14,8 +14,8 @@
         <div class="row">
             <div id="peoples">
                 <tabs>
-                    <tab name="Gamers list" :selected="true">
-                        <h2 class="page-subtitle title">Gamers list</h2>
+                    <tab name="Gamers list">
+                        <h2 class="title">Gamers list</h2>
                         <div class="gamers">
                             <div v-for="(item, index) in gamers" class="gamer media">
                                 <div class="media-left">
@@ -41,19 +41,49 @@
                         </div>
                     </tab>
                     <tab name="Battles list">
-                        <div>
-                            <h2 class="page-subtitle">Second tab</h2>
-                            <div class="battles">
-                                <div v-for="(item, index) in gamers" class="column is-half">
-                                    <h3>{{ item }} {{ index }}</h3>
+                        <h2 class="title">Second tab</h2>
+                        <form class="battles columns is-multiline is-mobile">
+                            <div v-for="(item, index) in gamers" class="battle column is-half">
+                                <div class="media">
+                                    <div class="media-left">
+                                        <div class="image">
+                                            <!--<img :src="'/img/users/'+(index+1)+'.png'">-->
+                                            <img src="/img/users/1.png">
+                                        </div>
+                                    </div>
+                                    <div class="name media-content">
+                                        <h3 class="subtitle">{{ item.name }}</h3>
+                                    </div>
+                                </div>
+                                <div v-if="index%2" class="battle-hr">
+                                    <div class="select-input">
+                                        <label class="">
+                                            <input class="is-hidden" type="radio" name="battle"
+                                                   :checked="index == 1"
+                                                   :value="(index - 1) / 2">
+                                            <a class="button is-light"></a>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
+                        </form>
+                        <div class="has-text-centered">
+                            <a class="button is-dark">Save</a>
                         </div>
                     </tab>
-                    <tab name="Current battle">
-                        <div>
-                            <h2 class="page-subtitle">Custom fragment</h2>
-                            The hash that is appended to the url can be customized.
+                    <tab name="Current battle" :selected="true">
+                        <h2 class="title">Current battle</h2>
+                        <div class="current-batle media">
+                            <div class="tile is-vertical is-6">
+                                <h2 class="title">
+                                    USER 1
+                                </h2>
+                            </div>
+                            <div class="tile is-vertical is-6">
+                                <h2 class="title">
+                                    USER 2
+                                </h2>
+                            </div>
                         </div>
                     </tab>
                 </tabs>

@@ -19,33 +19,15 @@ options = {
 }
 
 classes = {
-    'druid': {
-        'img': '/img/classes/druid.png'
-    },
-    'hunter': {
-        'img': '/img/classes/hunter.png'
-    },
-    'mage': {
-        'img': '/img/classes/mage.png'
-    },
-    'paladin': {
-        'img': '/img/classes/paladin.png'
-    },
-    'priest': {
-        'img': '/img/classes/priest.png'
-    },
-    'rogue': {
-        'img': '/img/classes/rogue.png'
-    },
-    'shaman': {
-        'img': '/img/classes/shaman.png'
-    },
-    'warlock': {
-        'img': '/img/classes/warlock.png'
-    },
-    'warrior': {
-        'img': '/img/classes/warrior.png'
-    },
+    'druid': {},
+    'hunter': {},
+    'mage': {},
+    'paladin': {},
+    'priest': {},
+    'rogue': {},
+    'shaman': {},
+    'warlock': {},
+    'warrior': {},
 }
 
 
@@ -76,41 +58,6 @@ class MyWebSocket(WebSocket):
     @staticmethod
     def get_clients():
         return super()._CLIENTS
-
-
-class User(RequestHandler):
-
-    def _json(self, data: dict = ()):
-        self.set_header('Content-type', 'application/json')
-        if len(data):
-            self.write(json.dumps(data))
-
-    def post(self, *args, **kwargs):
-        _d = json.loads(self.request.body.decode('utf-8'))
-        _a = _d.keys()
-
-        action = args[0].strip('/')
-        if action == 'upload_img':
-            pass
-        if action == 'check':
-            result = self.get_secure_cookie('id')
-            if result is None:
-                result = 0
-            else:
-                result = result.decode('utf-8')
-            str_result = len(str(int(result)))
-            result = True if result and (str_result == len(str(result))) else False
-            users = []
-            if True:
-                u = c.execute('SELECT login, email, online FROM users WHERE online = 1').fetchall()
-                for i in u:
-                    _image = 'default'
-                    _ = {'login': i[0], 'image': '//gravatar.com/avatar/{}?s=24'.format(_image, )}
-                    users.append(_)
-            self._json({
-                'result': result,
-                'users': users
-            })
 
 
 def update(*args, **kwargs):
@@ -152,7 +99,6 @@ if __name__ == "__main__":
 
     http_server = tornado.httpserver.HTTPServer(tornado.web.Application((
         (r"/ws/", MyWebSocket),
-        (r"/user/(\w+(/?))", User),
         (r'/(.*)', tornado.web.StaticFileHandler, {
             'path': os.path.join(project_root, 'static'),
             'default_filename': 'index.html'
