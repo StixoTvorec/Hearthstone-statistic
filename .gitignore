@@ -1,3 +1,5 @@
 
 .idea/
 __pycache__/
+static/css/*.css
+static/css/*.css.map

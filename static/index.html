@@ -2,11 +2,12 @@
 <html lang="ru" dir="ltr">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
     <meta name="robots" content="noindex">
     <title>Config</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
 </head>
 <body>
 <section class="content-wrapper fill-height" id="config">
@@ -41,30 +42,27 @@
                         </div>
                     </tab>
                     <tab name="Battles list">
-                        <h2 class="title">Second tab</h2>
+                        <h2 class="title">Battles list</h2>
                         <form class="battles columns is-multiline is-mobile">
-                            <div v-for="(item, index) in gamers" class="battle column is-half">
-                                <div class="media">
-                                    <div class="media-left">
-                                        <div class="image">
-                                            <!--<img :src="'/img/users/'+(index+1)+'.png'">-->
-                                            <img src="/img/users/1.png">
-                                        </div>
-                                    </div>
-                                    <div class="name media-content">
-                                        <h3 class="subtitle">{{ item.name }}</h3>
+                            <div v-for="(item, index) in battles" class="battle columns is-mobile column is-12">
+                                <div class="select-input has-text-centered column is-1">
+                                    <label class="">
+                                        <input class="is-hidden" type="radio" name="battle"
+                                               :checked="item.active"
+                                               :value="index">
+                                        <a class="button is-light"></a>
+                                    </label>
+                                </div>
+                                <div class="column is-2 has-text-centered">
+                                    <div class="image">
+                                        <!--<img :src="'/img/users/'+(index+1)+'.png'">-->
+                                        <img src="/img/users/1.png">
                                     </div>
                                 </div>
-                                <div v-if="index%2" class="battle-hr">
-                                    <div class="select-input">
-                                        <label class="">
-                                            <input class="is-hidden" type="radio" name="battle"
-                                                   :checked="index == 1"
-                                                   :value="(index - 1) / 2">
-                                            <a class="button is-light"></a>
-                                        </label>
-                                    </div>
+                                <div class="name column is-9">
+                                    <h3 class="subtitle">{{ item.name }}</h3>
                                 </div>
+                                <div class="battle-hr"></div>
                             </div>
                         </form>
                         <div class="has-text-centered">
@@ -112,5 +110,10 @@
 <script src="https://rawgit.com/vuejs/vue/dev/dist/vue.js"></script>
 
 <script src="/js/common.js"></script>
+<script>
+    (()=> {
+        const vm = new Vue(vueConfig['main']);
+    })();
+</script>
 </body>
 </html>

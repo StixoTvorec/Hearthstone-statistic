@@ -1,6 +1,10 @@
 
+;const globalMethods = {}
+
 ;(() => {
     'use strict';
+
+    const vueConfig = {};
 
     // function post(url, data) {
     //     data = data || {};
@@ -32,7 +36,7 @@
     RPC.addRoute('update_users', updateUsers);
 
     if(document.getElementById('users-list')) {
-        const vm = new Vue({
+        vueConfig['main'] = new Vue({
             el: '#users-list',
             data: {},
             methods: {}
@@ -97,7 +101,7 @@
             }
         });
 
-        const vm = new Vue({
+        vueConfig['main'] = new Vue({
             el: '#config',
             data: {
                 currentHash: window.location.hash,
@@ -106,10 +110,28 @@
                     {name: 'Gamer 2'},
                     {name: 'Gamer 3'},
                     {name: 'Gamer 4'},
-                    {name: 'Gamer 1'},
-                    {name: 'Gamer 2'},
-                    {name: 'Gamer 3'},
-                    {name: 'Gamer 4'},
+                    {name: 'Gamer 5'},
+                    {name: 'Gamer 6'},
+                    {name: 'Gamer 7'},
+                    {name: 'Gamer 8'},
+                ],
+                battles: [
+                    {
+                        gamers: [0, 1],
+                        active: false,
+                    },
+                    {
+                        gamers: [2, 3],
+                        active: true,
+                    },
+                    {
+                        gamers: [4, 5],
+                        active: false,
+                    },
+                    {
+                        gamers: [6, 7],
+                        active: false,
+                    },
                 ]
             },
             methods: {},

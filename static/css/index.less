@@ -1,0 +1,74 @@
+
+#config {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  footer {
+    &>.container {
+      border-top: #dbdbdb solid 1px;
+      padding: 1em;
+    }
+  }
+  .gamer, .battle {
+    .image {
+      max-width: 4em;
+    }
+    .header {
+      //width: 100%;
+    }
+  }
+  .battles > .battle {
+    position: relative;
+    &:nth-child(n+3) {
+      margin-top: 2rem;
+    }
+    &:first-child .battle-hr:before {
+      display: none;
+    }
+  }
+  .battle-hr {
+    position: absolute;
+    width: 100%;
+    margin-left: -.75rem;
+    margin-right: -.75rem;
+    top: 0;
+
+    &:after, &:before {
+      content: '';
+      display: block;
+      position: absolute;
+    }
+    &:after {
+      //content: 'VS';
+      //top: -.5rem;
+      top: -.05rem;
+      margin-left: -1rem;
+      border-top: solid rgba(0, 0, 255, 0.05) 1rem;
+      border-left: solid transparent 1rem;
+      border-right: solid transparent 1rem;
+      left: -.5rem;
+    }
+    &:before {
+      width: 200%;
+      height: 0;
+      border-bottom: solid #000 1px;
+      top: -1.2em;
+    }
+  }
+  .select-input {
+    padding-top: 1em;
+    label {
+      .button {
+        height: 1.63rem;
+        line-height: 1;
+      }
+      input:checked + .button {
+        background-color: #ffeebb;
+        &:after {
+          content: '✓';
+          display: block;
+          position: absolute;
+        }
+      }
+    }
+  }
+}

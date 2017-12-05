@@ -1,0 +1,22 @@
+@charset "utf-8";
+@import url(https://rawgit.com/elving/Hackerank/master/bower_components/normalize-css/normalize.css);
+@import url(https://fonts.googleapis.com/css?family=Roboto&amp;subset=cyrillic);
+
+@base-font-size: 16px;
+@base-offset: 2em;
+@gamers-color: #aa7742;
+
+body {
+  background: transparent;
+  font-family: Roboto, sans-serif;
+  font-size: @base-font-size;
+}
+.button.dotted > span {
+  border-bottom: 1px dotted;
+}
+
+@import "gamers";
+@import "statistic";
+@import "index";
+
+@import "classes";

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Gamers</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
 </head>
 <body>
 <section class="content-wrapper fill-height" id="gamers">
@@ -85,5 +85,10 @@
 <!--<script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
 <script src="//rawgit.com/vuejs/vue/dev/dist/vue.js"></script>
 <script src="/js/common.js"></script>
+<script>
+    (()=> {
+        const vm = new Vue(vueConfig['main']);
+    })();
+</script>
 </body>
 </html>

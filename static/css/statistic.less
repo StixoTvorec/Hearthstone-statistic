@@ -1,0 +1,83 @@
+
+#statistic {
+  display: inline-block;
+  position: relative;
+  &>.img {
+    font-size: 0;
+  }
+  .classes-wrapper {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 2em; // подгон размеров иконок
+  }
+  .classes {
+    position: absolute;
+    width: 69%;
+    height: 100%;
+    top: 0;
+    left: 50%;
+    margin-left: 0.65em; // подгон отступа иконок слева
+    .user-1, .user-2 {
+      position: absolute;
+      width: 100%;
+      height: @base-offset;
+      left: -50%;
+      letter-spacing: -1em;
+      .name {
+        width: 100%;
+        position: absolute;
+        text-align: center;
+        font-size: 1em;
+        letter-spacing: normal;
+        color: #fff;
+      }
+    }
+    .user-1 {
+      top: @base-offset;
+      .name {
+        top: -1.4em;
+      }
+    }
+    .user-2 {
+      bottom: @base-offset;
+      .name {
+        bottom: -1.4em;
+      }
+    }
+    .class {
+      position: relative;
+      height: @base-offset;
+      display: inline-block;
+      width: 25%;
+      text-align: center;
+    }
+  }
+  .counters {
+    position: absolute;
+    height: 100%;
+    width: 16%;
+    left: 0;
+    top: 0;
+    .user-1, .user-2 {
+      position: absolute;
+      width: 100%;
+      height: @base-offset;
+    }
+    .user-1 {
+      top: @base-offset * 1.2;
+    }
+    .user-2 {
+      bottom: @base-offset * 1.1;
+    }
+    .counter {
+      font-size: @base-offset * 1.5;
+      color: #fff;
+      line-height: 0.5;
+      text-align: center;
+    }
+  }
+}
