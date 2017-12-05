@@ -1,19 +1,104 @@
 
-;const globalMethods = {}
+;const globalMethods = {};
 
-;(() => {
+// TO DELETE!
+const battles = [
+    {
+        gamers: [0, 1],
+        active: false,
+    },
+];
+const gamers = [
+    {
+        name: 'Gamer 1',
+        active: false,
+        classes: [
+            {
+                class: 'druid',
+                available: true
+            },
+            {
+                class: 'hunter',
+                available: false
+            },
+            {
+                class: 'mage',
+                available: false
+            },
+            {
+                class: 'paladin',
+                available: true
+            },
+        ]
+    },
+    {
+        name: 'Gamer 2',
+        active: true,
+        classes: [
+            {
+                class: 'druid',
+                available: true
+            },
+            {
+                class: 'hunter',
+                available: false
+            },
+            {
+                class: 'mage',
+                available: false
+            },
+            {
+                class: 'paladin',
+                available: true
+            },
+        ]
+    },
+];
+
+
+(() => {
     'use strict';
 
-    const vueConfig = {};
+    if(typeof Vue === 'undefined') {
+        return;
+    }
 
-    // function post(url, data) {
-    //     data = data || {};
-    //     return fetch(url, {
-    //         credentials: 'include',
-    //         method: 'POST',
-    //         body: JSON.stringify(data)
-    //     });
-    // }
+    const classes = {
+        'druid': {},
+        'hunter': {},
+        'mage': {},
+        'paladin': {},
+        'priest': {},
+        'rogue': {},
+        'shaman': {},
+        'warlock': {},
+        'warrior': {},
+    };
+
+    const currentBattle = [
+        {
+            user_id: 0,
+            classes: [
+                'druid',
+                'hunter',
+                'mage',
+                'paladin',
+            ],
+            couner: 2
+        },
+        {
+            user_id: 2,
+            classes: [
+                'druid',
+                'hunter',
+                'mage',
+                'paladin',
+            ],
+            couner: 0
+        }
+    ];
+
+    const vueConfig = {};
 
     const url = 'ws://' + window.location.host + '/ws/';
     const RPC = WSRPC(url, 2000);
@@ -29,23 +114,83 @@
         RPC.call('time', (new Date()).getTime());
     });
 
+    RPC.addRoute('update_users', updateUsers);
+
+    if(document.getElementById('statistic')) {
+        vueConfig['main'] = {
+            el: '#statistic',
+            data: {
+                gamers: getGamers(),
+                battles: getBattles()
+            },
+            methods: {
+                getActiveBattle: function () {
+                    this.battles.forEach(function (battle) {
+                        if (battle.active) {
+                            return battle;
+                        }
+                    });
+                }
+            }
+        };
+    }
+
+    if(document.getElementById('gamers')) {
+        vueConfig['main'] = {
+            el: '#gamers',
+            data: {
+                gamers: getGamers(),
+                battles: getBattles()
+            },
+            methods: {}
+        };
+    }
+
+    if(document.getElementById('config')) {
+        vueConfig['main'] = {
+            el: '#config',
+            data: {
+                gamers: getGamers(),
+                battles: getBattles()
+            },
+            methods: {},
+            mounted() {
+            }
+        };
+    }
+
+    RPC.addEventListener('onconnect', function (e) {
+    });
+
+    RPC.connect();
+
+    //
     function updateUsers(e) {
         //
     }
 
-    RPC.addRoute('update_users', updateUsers);
+    function getGamers() {
+        return gamers;
+    }
 
-    if(document.getElementById('users-list')) {
-        vueConfig['main'] = new Vue({
-            el: '#users-list',
-            data: {},
-            methods: {}
+    function getBattles() {
+        return battles;
+    }
+
+
+    function post(url, method, data) {
+        data = data || {};
+        method = method || 'POST';
+        return fetch(url, {
+            credentials: 'include',
+            method: method,
+            body: JSON.stringify(data)
         });
     }
 
-    if(document.getElementById('config')) {
-        Vue.component('tabs', {
-            template: `
+    //
+    Vue.component('tabs', {
+        template: `
 <div class="">
     <div class="tabs">
         <ul>
@@ -59,90 +204,58 @@
     </div>
 </div>
 `,
-            mounted() {
+        mounted() {
+        },
+        data() {
+            return { tabs: [] };
+        },
+        created() {
+            this.tabs = this.$children;
+        },
+        methods: {
+            selectTab(selectedTab) {
+                this.tabs.forEach(tab => {
+                    tab.isActive = (tab.name === selectedTab.name)
+                });
             },
-            data() {
-                return { tabs: [] };
-            },
-            created() {
-                this.tabs = this.$children;
-            },
-            methods: {
-                selectTab(selectedTab) {
-                    this.tabs.forEach(tab => {
-                        tab.isActive = (tab.name === selectedTab.name)
-                    });
-                },
-            }
-        });
-
-        Vue.component('tab', {
-            template: '<div v-show="isActive"><slot></slot></div>',
-            props: {
-                name: {
-                    required: true,
-                },
-                selected: {
-                    default: false,
-                },
-            },
-            data() {
-                return {
-                    isActive: false
-                };
-            },
-            computed: {
-                href() {
-                    return '#' + this.name.toLowerCase().replace(/ /g, '-');
-                }
-            },
-            mounted() {
-                this.isActive = this.selected;
-            }
-        });
-
-        vueConfig['main'] = new Vue({
-            el: '#config',
-            data: {
-                currentHash: window.location.hash,
-                gamers: [
-                    {name: 'Gamer 1'},
-                    {name: 'Gamer 2'},
-                    {name: 'Gamer 3'},
-                    {name: 'Gamer 4'},
-                    {name: 'Gamer 5'},
-                    {name: 'Gamer 6'},
-                    {name: 'Gamer 7'},
-                    {name: 'Gamer 8'},
-                ],
-                battles: [
-                    {
-                        gamers: [0, 1],
-                        active: false,
-                    },
-                    {
-                        gamers: [2, 3],
-                        active: true,
-                    },
-                    {
-                        gamers: [4, 5],
-                        active: false,
-                    },
-                    {
-                        gamers: [6, 7],
-                        active: false,
-                    },
-                ]
-            },
-            methods: {},
-            mounted() {
-            }
-        });
-    }
-
-    RPC.addEventListener('onconnect', function (e) {
+        }
     });
 
-    RPC.connect();
+    Vue.component('tab', {
+        template: '<div v-show="isActive"><slot></slot></div>',
+        props: {
+            name: {
+                required: true,
+            },
+            selected: {
+                default: false,
+            },
+        },
+        data() {
+            return {
+                isActive: false
+            };
+        },
+        computed: {
+            href() {
+                return '#' + this.name.toLowerCase().replace(/ /g, '-');
+            }
+        },
+        mounted() {
+            this.isActive = this.selected;
+        }
+    });
+
+    //
+    globalMethods['getVueConfig'] = function(key) {
+        if(typeof key !== 'undefined' && typeof vueConfig[key] !== 'undefined') {
+            return vueConfig[key];
+        }
+        return vueConfig
+    };
+
+    globalMethods['getCurrentBattle'] = function () {
+        return currentBattle;
+    };
 
 })();

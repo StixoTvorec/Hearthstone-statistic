@@ -49,9 +49,9 @@
 <script src="//rawgit.com/vuejs/vue/dev/dist/vue.js"></script>
 <script src="/js/common.js"></script>
 <script>
-    (()=> {
-        const vm = new Vue(vueConfig['main']);
-    })();
+    document.addEventListener("DOMContentLoaded", ()=> {
+        new Vue(globalMethods['getVueConfig']('main'));
+    });
 </script>
 </body>
 </html>

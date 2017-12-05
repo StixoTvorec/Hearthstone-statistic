@@ -9,75 +9,31 @@
 <body>
 <section class="content-wrapper fill-height" id="gamers">
     <div class="list">
-        <div class="user">
-            <div class="photo">
+        <div v-for="(gamer, index) in gamers" v-if="index<(gamers.length/2)" class="user" :class="{'user-lose': !gamer.active}">
+            <div class="image">
+                <!--<img :src="'/img/users/' + (index + 1) + '.png'">-->
                 <img src="/img/users/1.png">
             </div>
             <div class="name">
-                <span>Name here</span>
-            </div>
-        </div>
-        <div class="user">
-            <div class="photo">
-                <img src="/img/users/1.png">
-            </div>
-            <div class="name">
-                <span>Longer name here</span>
-            </div>
-        </div>
-        <div class="user user-lose">
-            <div class="photo">
-                <img src="/img/users/1.png">
-            </div>
-            <div class="name">
-                <span>Name here</span>
-            </div>
-        </div>
-        <div class="user">
-            <div class="photo">
-                <img src="/img/users/1.png">
-            </div>
-            <div class="name">
-                <span>Name here</span>
+                <span>{{ gamer.name }}</span>
             </div>
         </div>
     </div>
 
     <div class="list pull-right">
-
-        <div class="user">
-            <div class="photo">
+        <div class="user"
+         v-for="(gamer, index) in gamers" v-if="index>=(gamers.length/2)" :class="{'user-lose': !gamer.active}">
+            <div class="image">
+                <!--<img :src="'/img/users/' + (index + 1) + '.png'">-->
                 <img src="/img/users/1.png">
             </div>
             <div class="name">
-                <span>Name here</span>
-            </div>
-        </div>
-        <div class="user">
-            <div class="photo">
-                <img src="/img/users/1.png">
-            </div>
-            <div class="name">
-                <span>Longer name here</span>
-            </div>
-        </div>
-        <div class="user user-lose">
-            <div class="photo">
-                <img src="/img/users/1.png">
-            </div>
-            <div class="name">
-                <span>Name here</span>
-            </div>
-        </div>
-        <div class="user">
-            <div class="photo">
-                <img src="/img/users/1.png">
-            </div>
-            <div class="name">
-                <span>Name here</span>
+                <span>{{ gamer.name }}</span>
             </div>
         </div>
     </div>
+    <div class="cam-overlay cam-overlay-1"><img src="/img/cam-overlay.png"></div>
+    <div class="cam-overlay cam-overlay-2"><img src="/img/cam-overlay.png"></div>
 </section>
 
 <script src="/js/q.min.js"></script>
@@ -86,9 +42,9 @@
 <script src="//rawgit.com/vuejs/vue/dev/dist/vue.js"></script>
 <script src="/js/common.js"></script>
 <script>
-    (()=> {
-        const vm = new Vue(vueConfig['main']);
-    })();
+    document.addEventListener("DOMContentLoaded", ()=> {
+        new Vue(globalMethods['getVueConfig']('main'));
+    });
 </script>
 </body>
 </html>

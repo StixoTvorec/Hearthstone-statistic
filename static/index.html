@@ -20,7 +20,7 @@
                         <div class="gamers">
                             <div v-for="(item, index) in gamers" class="gamer media">
                                 <div class="media-left">
-                                    <div class="image">
+                                    <div class="image" :class="{'user-lose': !item.active}">
                                         <!--<img :src="'/img/users/'+(index+1)+'.png'">-->
                                         <img src="/img/users/1.png">
                                     </div>
@@ -44,25 +44,27 @@
                     <tab name="Battles list">
                         <h2 class="title">Battles list</h2>
                         <form class="battles columns is-multiline is-mobile">
-                            <div v-for="(item, index) in battles" class="battle columns is-mobile column is-12">
-                                <div class="select-input has-text-centered column is-1">
-                                    <label class="">
-                                        <input class="is-hidden" type="radio" name="battle"
-                                               :checked="item.active"
-                                               :value="index">
-                                        <a class="button is-light"></a>
-                                    </label>
-                                </div>
-                                <div class="column is-2 has-text-centered">
-                                    <div class="image">
-                                        <!--<img :src="'/img/users/'+(index+1)+'.png'">-->
-                                        <img src="/img/users/1.png">
+                            <div v-for="(battle, battle_index) in battles" class="battle columns is-mobile column is-12">
+                                <div class="battle-hr"></div>
+                                <div v-for="(item, index) in battle.gamers" class="user columns is-mobile column is-6">
+                                    <div class="is-flex-mobile select-input has-text-centered column is-3-touch is-4-mobile">
+                                        <label v-if="index%2 == 0" class="is-padding-mobile">
+                                            <input class="is-hidden" type="radio" name="battle"
+                                                   :checked="battle.active"
+                                                   :value="index">
+                                            <a class="button is-light"></a>
+                                        </label>
+                                    </div>
+                                    <div class="is-flex-mobile column is-6-mobile is-2-desktop is-3-tablet has-text-centered">
+                                        <div class="image" :class="{'user-lose': !gamers[item].active}">
+                                            <!--<img :src="'/img/users/'+(battle_index*2+item+1)+'.png'">-->
+                                            <img src="/img/users/1.png">
+                                        </div>
+                                    </div>
+                                    <div class="name column is-9-tablet is-hidden-mobile">
+                                        <h3 class="subtitle">{{ gamers[item].name }}</h3>
                                     </div>
                                 </div>
-                                <div class="name column is-9">
-                                    <h3 class="subtitle">{{ item.name }}</h3>
-                                </div>
-                                <div class="battle-hr"></div>
                             </div>
                         </form>
                         <div class="has-text-centered">
@@ -111,9 +113,15 @@
 
 <script src="/js/common.js"></script>
 <script>
-    (()=> {
-        const vm = new Vue(vueConfig['main']);
-    })();
+    document.addEventListener("DOMContentLoaded", ()=> {
+        new Vue(globalMethods['getVueConfig']('main'));
+        setTimeout(()=>{
+            const elem = document.querySelector('a[href="' + window.location.hash + '"]');
+            if(elem) {
+                elem.click();
+            }
+        }, 20);
+    });
 </script>
 </body>
 </html>
