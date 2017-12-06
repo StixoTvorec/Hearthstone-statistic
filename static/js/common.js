@@ -131,7 +131,7 @@ const gamers = [
                         }
                     });
                 }
-            }
+            },
         };
     }
 
@@ -155,6 +155,13 @@ const gamers = [
             },
             methods: {},
             mounted() {
+                this.$nextTick(() => {
+                    let selector = window.location.hash ? 'a[href="' + window.location.hash + '"]' : '.tabs>ul>li>a';
+                    const elem = document.querySelector(selector);
+                    if (elem) {
+                        elem.click();
+                    }
+                });
             }
         };
     }

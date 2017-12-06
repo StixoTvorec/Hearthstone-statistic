@@ -6,6 +6,7 @@
     <meta name="robots" content="noindex">
     <title>Config</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <style>tabs {display: none;}</style>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
     <link rel="stylesheet" type="text/css" href="/css/main.css">
 </head>
@@ -71,7 +72,7 @@
                             <a class="button is-dark">Save</a>
                         </div>
                     </tab>
-                    <tab name="Current battle" :selected="true">
+                    <tab name="Current battle">
                         <h2 class="title">Current battle</h2>
                         <div class="current-batle media">
                             <div class="tile is-vertical is-6">
@@ -115,12 +116,6 @@
 <script>
     document.addEventListener("DOMContentLoaded", ()=> {
         new Vue(globalMethods['getVueConfig']('main'));
-        setTimeout(()=>{
-            const elem = document.querySelector('a[href="' + window.location.hash + '"]');
-            if(elem) {
-                elem.click();
-            }
-        }, 20);
     });
 </script>
 </body>
