@@ -3,61 +3,65 @@
 
 // TO DELETE!
 const battles = [
-    {
-        gamers: [0, 1],
-        active: true,
-    },
-    {
-        gamers: [0, 1],
-        active: false,
-    },
+    // {
+    //     gamers: [0, 1],
+    //     active: true,
+    // },
+    // {
+    //     gamers: [0, 1],
+    //     active: false,
+    // },
 ];
 const gamers = [
-    {
-        name: 'Gamer 1',
-        active: false,
-        classes: [
-            {
-                class: 'druid',
-                available: true
-            },
-            {
-                class: 'hunter',
-                available: false
-            },
-            {
-                class: 'mage',
-                available: false
-            },
-            {
-                class: 'paladin',
-                available: true
-            },
-        ]
-    },
-    {
-        name: 'Gamer 2',
-        active: true,
-        classes: [
-            {
-                class: 'druid',
-                available: true
-            },
-            {
-                class: 'hunter',
-                available: false
-            },
-            {
-                class: 'mage',
-                available: false
-            },
-            {
-                class: 'paladin',
-                available: true
-            },
-        ]
-    },
+    // {
+    //     name: 'Gamer 1',
+    //     active: false,
+    //     classes: [
+    //         {
+    //             class: 'druid',
+    //             available: true
+    //         },
+    //         {
+    //             class: 'hunter',
+    //             available: false
+    //         },
+    //         {
+    //             class: 'mage',
+    //             available: false
+    //         },
+    //         {
+    //             class: 'paladin',
+    //             available: true
+    //         },
+    //     ]
+    // },
+    // {
+    //     name: 'Gamer 2',
+    //     active: true,
+    //     classes: [
+    //         {
+    //             class: 'druid',
+    //             available: true
+    //         },
+    //         {
+    //             class: 'hunter',
+    //             available: false
+    //         },
+    //         {
+    //             class: 'mage',
+    //             available: false
+    //         },
+    //         {
+    //             class: 'paladin',
+    //             available: true
+    //         },
+    //     ]
+    // },
 ];
+const activeBattle = {
+    // gamers: [0, 1],
+    // id: 0
+};
 
 
 (() => {
@@ -158,15 +162,18 @@ const gamers = [
             el: '#statistic',
             data: {
                 gamers: getGamers(),
-                battles: getBattles()
+                battles: getBattles(),
             },
             methods: {
                 getActiveBattle: function () {
-                    this.battles.forEach(function (battle) {
+                    this.battles.forEach(function (battle, id) {
                         if (battle.active) {
-                            return battle;
+                            activeBattle.gamers = battle.gamers;
+                            activeBattle.id = id;
+                            return activeBattle;
                         }
                     });
+                    return activeBattle;
                 }
             },
         };
@@ -195,7 +202,6 @@ const gamers = [
                 battles: getBattles(),
                 currentBattle: currentBattle,
                 classes: classes,
-                activeBattle: getActiveBattle,
             },
             methods: {
                 updateGamers: function () {
@@ -206,6 +212,16 @@ const gamers = [
                 },
                 forceUpdate: function () {
                     forceUpdate();
+                },
+                getActiveBattle: function () {
+                    this.battles.forEach(function (battle, id) {
+                        if (battle.active) {
+                            activeBattle.gamers = battle.gamers;
+                            activeBattle.id = id;
+                            return activeBattle;
+                        }
+                    });
+                    return activeBattle;
                 }
             },
             mounted() {
@@ -235,21 +251,6 @@ const gamers = [
 
     function getBattles() {
         return battles;
-    }
-
-    function getActiveBattle() {
-        let battle;
-        battle = battles.forEach(function (e, i) {
-            if(e.active) {
-                return i;
-            }
-        });
-
-        if (typeof battle === 'undefined') {
-            return 0;
-        }
-
-        return battles[battle];
     }
 
 

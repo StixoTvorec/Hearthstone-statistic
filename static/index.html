@@ -91,11 +91,11 @@
                     </tab>
                     <tab name="Current battle">
                         <h2 class="title">Current battle</h2>
-                        {{ activeBattle() }}
+                        {{ getActiveBattle() }}
                         <div class="current-batle media">
-                            <div v-for="gamer in activeBattle().gamers" class="tile is-vertical is-6">
+                            <div v-for="gamer in getActiveBattle().gamers" class="tile is-vertical is-6">
                                 <h2 class="title">
-                                    {{ gamers[gamer].name}}
+                                    {{ gamers[gamer].name }}
                                 </h2>
                             </div>
                         </div>
