@@ -1,75 +1,16 @@
 
 ;const globalMethods = {};
 
-// TO DELETE!
-const battles = [
-    // {
-    //     gamers: [0, 1],
-    //     active: true,
-    // },
-    // {
-    //     gamers: [0, 1],
-    //     active: false,
-    // },
-];
-const gamers = [
-    // {
-    //     name: 'Gamer 1',
-    //     active: false,
-    //     classes: [
-    //         {
-    //             class: 'druid',
-    //             available: true
-    //         },
-    //         {
-    //             class: 'hunter',
-    //             available: false
-    //         },
-    //         {
-    //             class: 'mage',
-    //             available: false
-    //         },
-    //         {
-    //             class: 'paladin',
-    //             available: true
-    //         },
-    //     ]
-    // },
-    // {
-    //     name: 'Gamer 2',
-    //     active: true,
-    //     classes: [
-    //         {
-    //             class: 'druid',
-    //             available: true
-    //         },
-    //         {
-    //             class: 'hunter',
-    //             available: false
-    //         },
-    //         {
-    //             class: 'mage',
-    //             available: false
-    //         },
-    //         {
-    //             class: 'paladin',
-    //             available: true
-    //         },
-    //     ]
-    // },
-];
-const activeBattle = {
-    // gamers: [0, 1],
-    // id: 0
-};
-
-
+    const activeBattle = {'id': 0};
 (() => {
     'use strict';
 
     if(typeof Vue === 'undefined') {
         return;
     }
+
+    const battles = [];
+    const gamers = [];
 
     const classes = {
         'druid': {},
@@ -120,6 +61,8 @@ const activeBattle = {
     });
 
     RPC.addRoute('updateBattles', (data) => {
+        console.log('updateBattles route');
+        console.log(data);
         let i;
         if(typeof data['battles'] !== 'undefined') {
             for (i of Object.getOwnPropertyNames(battles)) {
@@ -136,6 +79,8 @@ const activeBattle = {
     });
 
     RPC.addRoute('updateGamers', (data) => {
+        console.log('updateGamers route');
+        console.log(data);
         let i;
         if(typeof data['gamers'] !== 'undefined') {
             for (i of Object.getOwnPropertyNames(gamers)) {
@@ -156,6 +101,14 @@ const activeBattle = {
         }
     });
 
+    RPC.addRoute('updateActiveBattle', (data) => {
+        console.log('updateActiveBattle route');
+        console.log(data);
+        if(typeof data['activeBattle'] !== 'undefined') {
+            activeBattle['id'] = data['activeBattle'];
+        }
+    });
+
     // current battle statistic
     if(document.getElementById('statistic')) {
         vueConfig['main'] = {
@@ -163,17 +116,11 @@ const activeBattle = {
             data: {
                 gamers: getGamers(),
                 battles: getBattles(),
+                activeBattle: activeBattle,
             },
             methods: {
                 getActiveBattle: function () {
-                    this.battles.forEach(function (battle, id) {
-                        if (battle.active) {
-                            activeBattle.gamers = battle.gamers;
-                            activeBattle.id = id;
-                            return activeBattle;
-                        }
-                    });
-                    return activeBattle;
+                    return battles[this.activeBattle] || {};
                 }
             },
         };
@@ -202,26 +149,20 @@ const activeBattle = {
                 battles: getBattles(),
                 currentBattle: currentBattle,
                 classes: classes,
+                activeBattle: activeBattle,
             },
             methods: {
                 updateGamers: function () {
-                    RPC.call('updateGamers', {gamers: this.gamers});
-                },
-                updateBattles: function () {
-                    RPC.call('updateBattles', {battles: this.battles});
+                    RPC.call('setGamers', {gamers: this.gamers});
                 },
                 forceUpdate: function () {
                     forceUpdate();
                 },
                 getActiveBattle: function () {
-                    this.battles.forEach(function (battle, id) {
-                        if (battle.active) {
-                            activeBattle.gamers = battle.gamers;
-                            activeBattle.id = id;
-                            return activeBattle;
-                        }
-                    });
-                    return activeBattle;
+                    return battles[this.activeBattle] || {};
+                },
+                setActiveBattle: function () {
+                    RPC.call('setActiveBattle', {activeBattle: this.activeBattle['id']});
                 }
             },
             mounted() {

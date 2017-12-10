@@ -36,14 +36,13 @@ def time_now():
 
 
 class MyWebSocket(WebSocket):
+    active_battle = 0
     battles = [
         {
             'gamers': [0, 1],
-            'active': True,
         },
         {
             'gamers': [1, 0],
-            'active': False,
         },
     ]
     gamers = [
@@ -105,36 +104,41 @@ class MyWebSocket(WebSocket):
         return MyWebSocket._CLIENTS
 
 
-def refresh_gamers():
-    _list = MyWebSocket.get_clients()
-    for u in _list:
-        _list[u].call('updateGamers', **{
+def refresh_gamers(client=None):
+    if client and isinstance(client, WebSocket):
+        clients = {'c': client}
+    else:
+        clients = MyWebSocket.get_clients()
+    for u in clients:
+        clients[u].call('updateGamers', **{
             'gamers': MyWebSocket.gamers
         })
 
 
-def refresh_battles():
-    _list = MyWebSocket.get_clients()
-    for u in _list:
-        _list[u].call('updateBattles', **{
-            'gamers': MyWebSocket.battles
+def refresh_battles(client=None):
+    if client and isinstance(client, WebSocket):
+        clients = {'c': client}
+    else:
+        clients = MyWebSocket.get_clients()
+    for u in clients:
+        clients[u].call('updateBattles', **{
+            'battles': MyWebSocket.battles
         })
 
 
-def update_battles(*args, **kwargs):
-    if kwargs.get('battles', False):
-        battles = kwargs.get('battles')
-        MyWebSocket.battles = battles
+def refresh_active_battle(client=None):
+    if client and isinstance(client, WebSocket):
+        clients = {'c': client}
+    else:
+        clients = MyWebSocket.get_clients()
 
-    refresh_battles()
+    for u in clients:
+        clients[u].call('updateActiveBattle', **{
+            'activeBattle': MyWebSocket.active_battle
+        })
 
 
-def update_battle(*args, **kwargs):
-    pass
-    # refresh_battles()
-
-
-def update_gamers(*args, **kwargs):
+def set_gamers(*args, **kwargs):
     if kwargs.get('gamers', False):
         gamers = kwargs.get('gamers')
         MyWebSocket.gamers = gamers
@@ -142,32 +146,25 @@ def update_gamers(*args, **kwargs):
         refresh_gamers()
 
 
-def update_gamer(*args, **kwargs):
-    if kwargs.get('gamer', False)\
-            and MyWebSocket.gamers[kwargs.get('gamer')['index']]:
-        gamer = kwargs.get('gamer')
+def set_active_battle(*args, **kwargs):
+    if kwargs.get('activeBattle', -1) >= 0:
+        print('in battle: ', kwargs.get('activeBattle'))
+        MyWebSocket.active_battle = kwargs.get('activeBattle')
 
-        MyWebSocket.gamers[gamer.get('index')] = gamer.get('gamer')
-
-        refresh_gamers()
+        refresh_active_battle()
 
 
-def update(*args, **kwargs):
+def updateMe(*args, **kwargs):
     if isinstance(args[0], WebSocket):
         client = args[0]
-        client.call('updateGamers', **{
-            'gamers': MyWebSocket.gamers
-        })
-        client.call('updateBattles', **{
-            'battles': MyWebSocket.battles
-        })
+        refresh_gamers(client)
+        # refresh_battles(client)
+        refresh_active_battle(client)
 
 
-MyWebSocket.ROUTES['updateMe'] = update
-MyWebSocket.ROUTES['updateBattles'] = update_battles
-MyWebSocket.ROUTES['updateBattle'] = update_battle
-MyWebSocket.ROUTES['updateGamers'] = update_gamers
-MyWebSocket.ROUTES['updateGamer'] = update_gamer
+MyWebSocket.ROUTES['updateMe'] = updateMe
+MyWebSocket.ROUTES['setGamers'] = set_gamers
+MyWebSocket.ROUTES['setActiveBattle'] = set_active_battle
 MyWebSocket.ROUTES['getTime'] = lambda t: time.time()
 
 if __name__ == "__main__":

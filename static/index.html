@@ -67,8 +67,9 @@
                                     <div class="is-flex-mobile select-input has-text-centered column is-3-touch is-4-mobile">
                                         <label v-if="index%2 == 0" class="is-padding-mobile">
                                             <input class="is-hidden" type="radio" name="battle"
-                                                   v-model="battle.active"
-                                                   value="true">
+                                                   v-model="activeBattle.id"
+                                                   :checked="activeBattle.id == battle_index"
+                                                   :value="battle_index">
                                             <a class="button is-light"></a>
                                         </label>
                                         <!--{{ battle.active }}-->
@@ -86,12 +87,11 @@
                             </div>
                         </form>
                         <div class="has-text-centered">
-                            <a class="button is-dark" @click="updateBattles()">Save</a>
+                            <a class="button is-dark" @click="setActiveBattle()">Save</a>
                         </div>
                     </tab>
                     <tab name="Current battle">
                         <h2 class="title">Current battle</h2>
-                        {{ getActiveBattle() }}
                         <div class="current-batle media">
                             <div v-for="gamer in getActiveBattle().gamers" class="tile is-vertical is-6">
                                 <h2 class="title">
