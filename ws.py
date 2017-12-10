@@ -36,18 +36,58 @@ def time_now():
 
 
 class MyWebSocket(WebSocket):
-
-    _need_logout = False
-
-    def system_message(self, text: str):
-        self.call('incoming', **{
-            'message': text,
-             'is_my': 0,
-             'is_system': 1,
-             'image': '/img/logo.svg',
-             'name': 'System',
-             'date': time_now()
-        })
+    battles = [
+        # {
+        #     'gamers': [0, 1],
+        #     'active': False,
+        # },
+    ]
+    gamers = [
+        {
+            'name': '',
+            'active': False,
+            'classes': [
+                {
+                    'class': '',
+                    'available': False
+                },
+                {
+                    'class': '',
+                    'available': False
+                },
+                {
+                    'class': '',
+                    'available': False
+                },
+                {
+                    'class': '',
+                    'available': False
+                },
+            ]
+        },
+        {
+            'name': '',
+            'active': True,
+            'classes': [
+                {
+                    'class': '',
+                    'available': False
+                },
+                {
+                    'class': '',
+                    'available': False
+                },
+                {
+                    'class': '',
+                    'available': False
+                },
+                {
+                    'class': '',
+                    'available': False
+                },
+            ]
+        },
+    ]
 
     def on_close(self):
         super().on_close()
@@ -57,31 +97,56 @@ class MyWebSocket(WebSocket):
 
     @staticmethod
     def get_clients():
-        return super()._CLIENTS
+        return MyWebSocket._CLIENTS
+
+
+def update_current_battle(*args, **kwargs):
+    _list = MyWebSocket.get_clients()
+
+    print(args)
+    print(kwargs)
+    # updateCurrentBattle
+    pass
+
+
+def refresh_gamers():
+    _list = MyWebSocket.get_clients()
+    for u in _list:
+        _list[u].call('updateGamers', **{
+            'gamers': MyWebSocket.gamers
+        })
+
+def update_gamers(*args, **kwargs):
+    if kwargs.get('gamers', False):
+        gamers = kwargs.get('gamers')
+
+        MyWebSocket.gamers = gamers
+
+        refresh_gamers()
+
+
+def update_gamer(*args, **kwargs):
+    if kwargs.get('gamer', False)\
+            and MyWebSocket.gamers[kwargs.get('gamer')['index']]:
+        gamer = kwargs.get('gamer')
+
+        MyWebSocket.gamers[gamer.get('index')] = gamer.get('gamer')
+
+        refresh_gamers()
 
 
 def update(*args, **kwargs):
-    _m = str(args[1]).strip()
-    if len(_m) < 2 or len(_m) > 512:
-        args[0].system_message('Length limitation from 2 to 512 characters')
-        return None
-    _m = _m.replace('<', '&lt;').replace('>', '&gt;')
     _list = MyWebSocket.get_clients()
 
-    md5 = 'default'
-    _l = 'Anonymous'
-    for u in _list:
-        _list[u].call('incoming', **{
-            'message': _m,
-            'is_my': 1 if args[0].id == u else 0,
-            'is_system': 0,
-            'image': '//gravatar.com/avatar/{}?s=96'.format(md5, ),
-            'name': _l,
-            'date': time_now()
-        })
+    # for u in _list:
+        # _list[u].call('current_battle', **{
+        # })
 
 
 MyWebSocket.ROUTES['update'] = update
+MyWebSocket.ROUTES['updateCurrentBattle'] = update_current_battle
+MyWebSocket.ROUTES['updateGamers'] = update_gamers
+MyWebSocket.ROUTES['updateGamer'] = update_gamer
 MyWebSocket.ROUTES['getTime'] = lambda t: time.time()
 
 if __name__ == "__main__":

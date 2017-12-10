@@ -87,7 +87,7 @@ const gamers = [
             couner: 2
         },
         {
-            user_id: 2,
+            user_id: 1,
             classes: [
                 'druid',
                 'hunter',
@@ -103,9 +103,6 @@ const gamers = [
     const url = 'ws://' + window.location.host + '/ws/';
     const RPC = WSRPC(url, 2000);
 
-    const storage = {};
-    storage['lastMsgTime'] = (new Date()).getTime();
-
     RPC.addRoute('whoAreYou', (data) => {
         return window.navigator.userAgent;
     });
@@ -114,8 +111,32 @@ const gamers = [
         RPC.call('time', (new Date()).getTime());
     });
 
-    RPC.addRoute('update_users', updateUsers);
+    RPC.addRoute('updateCurrentBattle', (data) => {
+        console.log(data);
+    });
 
+    RPC.addRoute('updateGamers', (data) => {
+        let i;
+        if(typeof data['gamers'] !== 'undefined') {
+            for (i of Object.getOwnPropertyNames(gamers)) {
+                if (gamers.hasOwnProperty(i)) {
+                    gamers.pop();
+                }
+            }
+            for(i in data['gamers']) {
+                if(data['gamers'].hasOwnProperty(i)) {
+                    gamers.push(data['gamers'][i]);
+                }
+            }
+        }
+        if(typeof data['gamer'] !== 'undefined') {
+            if(gamers.hasOwnProperty(data['gamer']['index'])) {
+                gamers[data['gamer']['index']] = data['gamer']['gamer']
+            }
+        }
+    });
+
+    // current battle statistic
     if(document.getElementById('statistic')) {
         vueConfig['main'] = {
             el: '#statistic',
@@ -135,6 +156,7 @@ const gamers = [
         };
     }
 
+    // all gamers list
     if(document.getElementById('gamers')) {
         vueConfig['main'] = {
             el: '#gamers',
@@ -146,14 +168,21 @@ const gamers = [
         };
     }
 
+    // index file, main config
     if(document.getElementById('config')) {
         vueConfig['main'] = {
             el: '#config',
             data: {
                 gamers: getGamers(),
-                battles: getBattles()
+                battles: getBattles(),
+                currentBattle: currentBattle,
+                classes: classes
             },
-            methods: {},
+            methods: {
+                updateGamers: function () {
+                    RPC.call('updateGamers', {gamers: this.gamers})
+                }
+            },
             mounted() {
                 this.$nextTick(() => {
                     let selector = window.location.hash ? 'a[href="' + window.location.hash + '"]' : '.tabs>ul>li>a';
@@ -166,15 +195,10 @@ const gamers = [
         };
     }
 
-    RPC.addEventListener('onconnect', function (e) {
+    RPC.addEventListener('onconnect', (e) => {
     });
 
     RPC.connect();
-
-    //
-    function updateUsers(e) {
-        //
-    }
 
     function getGamers() {
         return gamers;
@@ -258,7 +282,7 @@ const gamers = [
         if(typeof key !== 'undefined' && typeof vueConfig[key] !== 'undefined') {
             return vueConfig[key];
         }
-        return vueConfig
+        return {};
     };
 
     globalMethods['getCurrentBattle'] = function () {

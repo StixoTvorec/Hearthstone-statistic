@@ -28,14 +28,30 @@
                                 </div>
                                 <div class="name media-content">
                                     <div class="header field">
-                                        <div class="subtitle">Gamer name <sup>({{ index+1 }})</sup></div>
+                                        <label class="subtitle">Gamer config <sup>({{ index+1 }})</sup>
+                                            <input type="checkbox" :checked="item.active" v-model="item.active">
+                                        </label>
+                                    </div>
+                                    <div class="field _classes">
+                                        <div class="field has-addons">
+                                            <div class="select-input control" v-for="cl in item.classes">
+                                                <div class="select">
+                                                    <select v-model="cl.class">
+                                                        <option v-for="(c, i) in classes">{{ i }}</option>
+                                                    </select>
+                                                </div><label class="">
+                                                    <input class="is-hidden" type="checkbox" v-model="cl.available"
+                                                    ><a class="button is-light"></a>
+                                                </label>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="field has-addons level">
                                         <div class="control">
-                                            <input class="input" :value="item.name">
+                                            <input class="input" v-model="item.name">
                                         </div>
                                         <div class="control">
-                                            <a class="button">Accept</a>
+                                            <a class="button" @click="updateGamers()">Accept</a>
                                         </div>
                                     </div>
                                 </div>
@@ -77,12 +93,12 @@
                         <div class="current-batle media">
                             <div class="tile is-vertical is-6">
                                 <h2 class="title">
-                                    USER 1
+                                    {{ currentBattle ? gamers[currentBattle[0].user_id].name : '--' }}
                                 </h2>
                             </div>
                             <div class="tile is-vertical is-6">
                                 <h2 class="title">
-                                    USER 2
+                                    {{ currentBattle ? gamers[currentBattle[1].user_id].name : '--' }}
                                 </h2>
                             </div>
                         </div>
