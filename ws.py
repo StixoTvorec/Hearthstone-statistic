@@ -37,15 +37,19 @@ def time_now():
 
 class MyWebSocket(WebSocket):
     battles = [
-        # {
-        #     'gamers': [0, 1],
-        #     'active': False,
-        # },
+        {
+            'gamers': [0, 1],
+            'active': True,
+        },
+        {
+            'gamers': [1, 0],
+            'active': False,
+        },
     ]
     gamers = [
         {
             'name': '',
-            'active': False,
+            'active': True,
             'classes': [
                 {
                     'class': '',
@@ -94,19 +98,11 @@ class MyWebSocket(WebSocket):
 
     def open(self):
         super().open()
+        # update(self)
 
     @staticmethod
     def get_clients():
         return MyWebSocket._CLIENTS
-
-
-def update_current_battle(*args, **kwargs):
-    _list = MyWebSocket.get_clients()
-
-    print(args)
-    print(kwargs)
-    # updateCurrentBattle
-    pass
 
 
 def refresh_gamers():
@@ -117,10 +113,30 @@ def refresh_gamers():
         })
 
 
+def refresh_battles():
+    _list = MyWebSocket.get_clients()
+    for u in _list:
+        _list[u].call('updateBattles', **{
+            'gamers': MyWebSocket.battles
+        })
+
+
+def update_battles(*args, **kwargs):
+    if kwargs.get('battles', False):
+        battles = kwargs.get('battles')
+        MyWebSocket.battles = battles
+
+    refresh_battles()
+
+
+def update_battle(*args, **kwargs):
+    pass
+    # refresh_battles()
+
+
 def update_gamers(*args, **kwargs):
     if kwargs.get('gamers', False):
         gamers = kwargs.get('gamers')
-
         MyWebSocket.gamers = gamers
 
         refresh_gamers()
@@ -142,10 +158,14 @@ def update(*args, **kwargs):
         client.call('updateGamers', **{
             'gamers': MyWebSocket.gamers
         })
+        client.call('updateBattles', **{
+            'battles': MyWebSocket.battles
+        })
 
 
 MyWebSocket.ROUTES['updateMe'] = update
-MyWebSocket.ROUTES['updateCurrentBattle'] = update_current_battle
+MyWebSocket.ROUTES['updateBattles'] = update_battles
+MyWebSocket.ROUTES['updateBattle'] = update_battle
 MyWebSocket.ROUTES['updateGamers'] = update_gamers
 MyWebSocket.ROUTES['updateGamer'] = update_gamer
 MyWebSocket.ROUTES['getTime'] = lambda t: time.time()

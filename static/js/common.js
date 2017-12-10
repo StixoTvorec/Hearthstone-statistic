@@ -5,6 +5,10 @@
 const battles = [
     {
         gamers: [0, 1],
+        active: true,
+    },
+    {
+        gamers: [0, 1],
         active: false,
     },
 ];
@@ -111,8 +115,20 @@ const gamers = [
         RPC.call('time', (new Date()).getTime());
     });
 
-    RPC.addRoute('updateCurrentBattle', (data) => {
-        console.log(data);
+    RPC.addRoute('updateBattles', (data) => {
+        let i;
+        if(typeof data['battles'] !== 'undefined') {
+            for (i of Object.getOwnPropertyNames(battles)) {
+                if (battles.hasOwnProperty(i)) {
+                    battles.pop();
+                }
+            }
+            for (i in data['battles']) {
+                if (data['battles'].hasOwnProperty(i)) {
+                    battles.push(data['battles'][i]);
+                }
+            }
+        }
     });
 
     RPC.addRoute('updateGamers', (data) => {
@@ -154,6 +170,7 @@ const gamers = [
                 }
             },
         };
+        forceUpdate();
     }
 
     // all gamers list
@@ -166,6 +183,7 @@ const gamers = [
             },
             methods: {}
         };
+        forceUpdate();
     }
 
     // index file, main config
@@ -176,11 +194,18 @@ const gamers = [
                 gamers: getGamers(),
                 battles: getBattles(),
                 currentBattle: currentBattle,
-                classes: classes
+                classes: classes,
+                activeBattle: getActiveBattle,
             },
             methods: {
                 updateGamers: function () {
-                    RPC.call('updateGamers', {gamers: this.gamers})
+                    RPC.call('updateGamers', {gamers: this.gamers});
+                },
+                updateBattles: function () {
+                    RPC.call('updateBattles', {battles: this.battles});
+                },
+                forceUpdate: function () {
+                    forceUpdate();
                 }
             },
             mounted() {
@@ -195,8 +220,11 @@ const gamers = [
         };
     }
 
-    RPC.addEventListener('onconnect', (e) => {
+    function forceUpdate() {
         RPC.call('updateMe', {});
+    }
+
+    RPC.addEventListener('onconnect', (e) => {
     });
 
     RPC.connect();
@@ -207,6 +235,21 @@ const gamers = [
 
     function getBattles() {
         return battles;
+    }
+
+    function getActiveBattle() {
+        let battle;
+        battle = battles.forEach(function (e, i) {
+            if(e.active) {
+                return i;
+            }
+        });
+
+        if (typeof battle === 'undefined') {
+            return 0;
+        }
+
+        return battles[battle];
     }
 
 

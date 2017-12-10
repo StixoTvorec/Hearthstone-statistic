@@ -67,10 +67,11 @@
                                     <div class="is-flex-mobile select-input has-text-centered column is-3-touch is-4-mobile">
                                         <label v-if="index%2 == 0" class="is-padding-mobile">
                                             <input class="is-hidden" type="radio" name="battle"
-                                                   :checked="battle.active"
-                                                   :value="index">
+                                                   v-model="battle.active"
+                                                   value="true">
                                             <a class="button is-light"></a>
                                         </label>
+                                        <!--{{ battle.active }}-->
                                     </div>
                                     <div class="is-flex-mobile column is-6-mobile is-2-desktop is-3-tablet has-text-centered">
                                         <div class="image" :class="{'user-lose': !gamers[item].active}">
@@ -85,25 +86,22 @@
                             </div>
                         </form>
                         <div class="has-text-centered">
-                            <a class="button is-dark">Save</a>
+                            <a class="button is-dark" @click="updateBattles()">Save</a>
                         </div>
                     </tab>
                     <tab name="Current battle">
                         <h2 class="title">Current battle</h2>
+                        {{ activeBattle() }}
                         <div class="current-batle media">
-                            <div class="tile is-vertical is-6">
+                            <div v-for="gamer in activeBattle().gamers" class="tile is-vertical is-6">
                                 <h2 class="title">
-                                    {{ currentBattle ? gamers[currentBattle[0].user_id].name : '--' }}
-                                </h2>
-                            </div>
-                            <div class="tile is-vertical is-6">
-                                <h2 class="title">
-                                    {{ currentBattle ? gamers[currentBattle[1].user_id].name : '--' }}
+                                    {{ gamers[gamer].name}}
                                 </h2>
                             </div>
                         </div>
                     </tab>
                 </tabs>
+                <div class="force-update button" @click="forceUpdate()">Force update</div>
             </div>
         </div>
     </div>
