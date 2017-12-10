@@ -1,7 +1,6 @@
 
 ;const globalMethods = {};
 
-    const activeBattle = {'id': 0};
 (() => {
     'use strict';
 
@@ -9,42 +8,22 @@
         return;
     }
 
-    const battles = [];
-    const gamers = [];
-
-    const classes = {
-        'druid': {},
-        'hunter': {},
-        'mage': {},
-        'paladin': {},
-        'priest': {},
-        'rogue': {},
-        'shaman': {},
-        'warlock': {},
-        'warrior': {},
+    const appStorage = {
+        battles: [],
+        gamers: [],
+        activeBattle: 0
     };
 
-    const currentBattle = [
-        {
-            user_id: 0,
-            classes: [
-                'druid',
-                'hunter',
-                'mage',
-                'paladin',
-            ],
-            couner: 2
-        },
-        {
-            user_id: 1,
-            classes: [
-                'druid',
-                'hunter',
-                'mage',
-                'paladin',
-            ],
-            couner: 0
-        }
+    const classes = [
+        'druid',
+        'hunter',
+        'mage',
+        'paladin',
+        'priest',
+        'rogue',
+        'shaman',
+        'warlock',
+        'warrior',
     ];
 
     const vueConfig = {};
@@ -65,14 +44,10 @@
         console.log(data);
         let i;
         if(typeof data['battles'] !== 'undefined') {
-            for (i of Object.getOwnPropertyNames(battles)) {
-                if (battles.hasOwnProperty(i)) {
-                    battles.pop();
-                }
-            }
+            appStorage.battles = [];
             for (i in data['battles']) {
                 if (data['battles'].hasOwnProperty(i)) {
-                    battles.push(data['battles'][i]);
+                    appStorage.battles.push(data['battles'][i]);
                 }
             }
         }
@@ -83,20 +58,11 @@
         console.log(data);
         let i;
         if(typeof data['gamers'] !== 'undefined') {
-            for (i of Object.getOwnPropertyNames(gamers)) {
-                if (gamers.hasOwnProperty(i)) {
-                    gamers.pop();
-                }
-            }
+            appStorage.gamers = [];
             for(i in data['gamers']) {
                 if(data['gamers'].hasOwnProperty(i)) {
-                    gamers.push(data['gamers'][i]);
+                    appStorage.gamers.push(data['gamers'][i]);
                 }
-            }
-        }
-        if(typeof data['gamer'] !== 'undefined') {
-            if(gamers.hasOwnProperty(data['gamer']['index'])) {
-                gamers[data['gamer']['index']] = data['gamer']['gamer']
             }
         }
     });
@@ -105,7 +71,7 @@
         console.log('updateActiveBattle route');
         console.log(data);
         if(typeof data['activeBattle'] !== 'undefined') {
-            activeBattle['id'] = data['activeBattle'];
+            appStorage.activeBattle = data['activeBattle'];
         }
     });
 
@@ -114,13 +80,11 @@
         vueConfig['main'] = {
             el: '#statistic',
             data: {
-                gamers: getGamers(),
-                battles: getBattles(),
-                activeBattle: activeBattle,
+                storage: appStorage,
             },
             methods: {
                 getActiveBattle: function () {
-                    return battles[this.activeBattle] || {};
+                    return appStorage.battles[this.storage.activeBattle] || {};
                 }
             },
         };
@@ -132,8 +96,7 @@
         vueConfig['main'] = {
             el: '#gamers',
             data: {
-                gamers: getGamers(),
-                battles: getBattles()
+                storage: appStorage
             },
             methods: {}
         };
@@ -145,24 +108,21 @@
         vueConfig['main'] = {
             el: '#config',
             data: {
-                gamers: getGamers(),
-                battles: getBattles(),
-                currentBattle: currentBattle,
+                storage: appStorage,
                 classes: classes,
-                activeBattle: activeBattle,
             },
             methods: {
                 updateGamers: function () {
-                    RPC.call('setGamers', {gamers: this.gamers});
+                    RPC.call('setGamers', {gamers: this.storage.gamers});
                 },
                 forceUpdate: function () {
                     forceUpdate();
                 },
                 getActiveBattle: function () {
-                    return battles[this.activeBattle] || {};
+                    return appStorage.battles[this.activeBattle] || {};
                 },
                 setActiveBattle: function () {
-                    RPC.call('setActiveBattle', {activeBattle: this.activeBattle['id']});
+                    RPC.call('setActiveBattle', {activeBattle: this.storage.activeBattle});
                 }
             },
             mounted() {
@@ -185,14 +145,6 @@
     });
 
     RPC.connect();
-
-    function getGamers() {
-        return gamers;
-    }
-
-    function getBattles() {
-        return battles;
-    }
 
 
     function post(url, method, data) {

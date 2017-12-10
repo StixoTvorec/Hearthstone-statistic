@@ -19,7 +19,7 @@
                     <tab name="Gamers list">
                         <h2 class="title">Gamers list</h2>
                         <div class="gamers">
-                            <div v-for="(item, index) in gamers" class="gamer media">
+                            <div v-for="(item, index) in storage.gamers" class="gamer media">
                                 <div class="media-left">
                                     <div class="image" :class="{'user-lose': !item.active}">
                                         <!--<img :src="'/img/users/'+(index+1)+'.png'">-->
@@ -37,7 +37,7 @@
                                             <div class="select-input control" v-for="cl in item.classes">
                                                 <div class="select">
                                                     <select v-model="cl.class">
-                                                        <option v-for="(c, i) in classes">{{ i }}</option>
+                                                        <option v-for="i in classes">{{ i }}</option>
                                                     </select>
                                                 </div><label class="">
                                                     <input class="is-hidden" type="checkbox" v-model="cl.available"
@@ -61,27 +61,25 @@
                     <tab name="Battles list">
                         <h2 class="title">Battles list</h2>
                         <form class="battles columns is-multiline is-mobile">
-                            <div v-for="(battle, battle_index) in battles" class="battle columns is-mobile column is-12">
+                            <div v-for="(battle, battle_index) in storage.battles" class="battle columns is-mobile column is-12">
                                 <div class="battle-hr"></div>
                                 <div v-for="(item, index) in battle.gamers" class="user columns is-mobile column is-6">
                                     <div class="is-flex-mobile select-input has-text-centered column is-3-touch is-4-mobile">
                                         <label v-if="index%2 == 0" class="is-padding-mobile">
                                             <input class="is-hidden" type="radio" name="battle"
-                                                   v-model="activeBattle.id"
-                                                   :checked="activeBattle.id == battle_index"
+                                                   v-model="storage.activeBattle"
+                                                   :checked="storage.activeBattle == battle_index"
                                                    :value="battle_index">
                                             <a class="button is-light"></a>
                                         </label>
-                                        <!--{{ battle.active }}-->
                                     </div>
                                     <div class="is-flex-mobile column is-6-mobile is-2-desktop is-3-tablet has-text-centered">
-                                        <div class="image" :class="{'user-lose': !gamers[item].active}">
-                                            <!--<img :src="'/img/users/'+(battle_index*2+item+1)+'.png'">-->
+                                        <div class="image" :class="{'user-lose': !storage.gamers[item].active}">
                                             <img src="/img/users/1.png">
                                         </div>
                                     </div>
                                     <div class="name column is-9-tablet is-hidden-mobile">
-                                        <h3 class="subtitle">{{ gamers[item].name }}</h3>
+                                        <h3 class="subtitle">{{ storage.gamers[item].name }}</h3>
                                     </div>
                                 </div>
                             </div>
@@ -95,7 +93,7 @@
                         <div class="current-batle media">
                             <div v-for="gamer in getActiveBattle().gamers" class="tile is-vertical is-6">
                                 <h2 class="title">
-                                    {{ gamers[gamer].name }}
+                                    {{ storage.gamers[gamer].name }}
                                 </h2>
                             </div>
                         </div>
