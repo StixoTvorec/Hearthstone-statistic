@@ -116,6 +116,7 @@ def refresh_gamers():
             'gamers': MyWebSocket.gamers
         })
 
+
 def update_gamers(*args, **kwargs):
     if kwargs.get('gamers', False):
         gamers = kwargs.get('gamers')
@@ -136,14 +137,14 @@ def update_gamer(*args, **kwargs):
 
 
 def update(*args, **kwargs):
-    _list = MyWebSocket.get_clients()
+    if isinstance(args[0], WebSocket):
+        client = args[0]
+        client.call('updateGamers', **{
+            'gamers': MyWebSocket.gamers
+        })
 
-    # for u in _list:
-        # _list[u].call('current_battle', **{
-        # })
 
-
-MyWebSocket.ROUTES['update'] = update
+MyWebSocket.ROUTES['updateMe'] = update
 MyWebSocket.ROUTES['updateCurrentBattle'] = update_current_battle
 MyWebSocket.ROUTES['updateGamers'] = update_gamers
 MyWebSocket.ROUTES['updateGamer'] = update_gamer

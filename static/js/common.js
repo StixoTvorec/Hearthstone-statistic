@@ -196,6 +196,7 @@ const gamers = [
     }
 
     RPC.addEventListener('onconnect', (e) => {
+        RPC.call('updateMe', {});
     });
 
     RPC.connect();
