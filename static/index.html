@@ -7,7 +7,8 @@
     <title>Config</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <style>tabs {display: none;}</style>
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bulma@0.6.1/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/vue-snotify@latest/styles/material.min.css">
     <link rel="stylesheet" type="text/css" href="/css/main.css">
 </head>
 <body>
@@ -65,13 +66,15 @@
                                 <div class="battle-hr"></div>
                                 <div v-for="(item, index) in battle.gamers" class="user columns is-mobile column is-6">
                                     <div class="is-flex-mobile select-input has-text-centered column is-3-touch is-4-mobile">
-                                        <label v-if="index%2 == 0" class="is-padding-mobile">
+                                        <label v-if="index%2 == 0" class="is-padding-mobile" title="Active battle">
                                             <input class="is-hidden" type="radio" name="battle"
                                                    v-model="storage.activeBattle"
                                                    :checked="storage.activeBattle == battle_index"
                                                    :value="battle_index">
                                             <a class="button is-light"></a>
                                         </label>
+                                        <a v-if="index%2 == 0" class="button delete-battle-button"
+                                           @click.ctrl="deleteBattle(battle_index)" title="DELETE BATTLE"></a>
                                     </div>
                                     <div class="is-flex-mobile column is-6-mobile is-2-desktop is-3-tablet has-text-centered">
                                         <div class="image" :class="{'user-lose': !storage.gamers[item].active}">
@@ -79,23 +82,37 @@
                                         </div>
                                     </div>
                                     <div class="name column is-9-tablet is-hidden-mobile">
-                                        <h3 class="subtitle">{{ storage.gamers[item].name }}</h3>
+                                        <h3 class="subtitle">
+                                            <select v-model="battle.gamers[index]">
+                                                <option v-for="(gamer, gamer_index) in storage.gamers"
+                                                        :value="gamer_index">{{ gamer.name }}</option>
+                                            </select>
+                                        </h3>
                                     </div>
                                 </div>
                             </div>
                         </form>
-                        <div class="has-text-centered">
+                        <div v-if="storage.gamers.length" class="has-text-centered">
+                            <a class="button" @click="addBattle()">Add battle</a>
                             <a class="button is-dark" @click="setActiveBattle()">Save</a>
                         </div>
                     </tab>
                     <tab name="Current battle">
                         <h2 class="title">Current battle</h2>
-                        <div class="current-batle media">
-                            <div v-for="gamer in getActiveBattle().gamers" class="tile is-vertical is-6">
+                        <div class="current-batle media" v-if="storage.gamers.length">
+                            <div v-for="(gamer, index) in getActiveBattle().gamers" class="tile is-vertical is-6">
+                                <!--<div class="image"><img :src="'/img/users/' + (1 + gamer) + '.png'"></div>-->
+                                <div class="image"><img :src="'/img/users/' + 1 + '.png'"></div>
                                 <h2 class="title">
                                     {{ storage.gamers[gamer].name }}
                                 </h2>
+                                <h3>
+                                    <input v-model="storage.activeBattleCounter[index]">
+                                </h3>
                             </div>
+                        </div>
+                        <div v-if="storage.gamers.length" class="current-batle has-text-centered">
+                            <a class="button" @click="saveActiveBattleCounter()">Save</a>
                         </div>
                     </tab>
                 </tabs>
@@ -114,6 +131,7 @@
             </div>
         </div>
     </footer>
+    <vue-snotify></vue-snotify>
 </section>
 
 <!--Powered by https://github.com/1271-->
@@ -123,12 +141,9 @@
 
 <!--<script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
 <script src="https://rawgit.com/vuejs/vue/dev/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-snotify@latest/vue-snotify.min.js"></script>
+<script src="/js/vue-components.js"></script>
 
 <script src="/js/common.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", ()=> {
-        new Vue(globalMethods['getVueConfig']('main'));
-    });
-</script>
 </body>
 </html>

@@ -37,46 +37,39 @@ def time_now():
 
 class MyWebSocket(WebSocket):
     active_battle = 0
+    active_battle_counter = [0, 0]
     battles = []
-    gamers = [
+    gamers = 8 * [
         {
             'name': '',
             'active': True,
             'classes': [
                 {
                     'class': '',
-                    'available': False
+                    'available': True
                 },
                 {
                     'class': '',
-                    'available': False
+                    'available': True
                 },
                 {
                     'class': '',
-                    'available': False
+                    'available': True
                 },
                 {
                     'class': '',
-                    'available': False
-                },
+                    'available': True
+                }
             ]
-        },
-        {'name': '','active': True,'classes': [{'class': '','available': False},{'class': '','available': False},{'class': '','available': False},{'class': '','available': False},]},
-        {'name': '','active': True,'classes': [{'class': '','available': False},{'class': '','available': False},{'class': '','available': False},{'class': '','available': False},]},
-        {'name': '','active': True,'classes': [{'class': '','available': False},{'class': '','available': False},{'class': '','available': False},{'class': '','available': False},]},
-        {'name': '','active': True,'classes': [{'class': '','available': False},{'class': '','available': False},{'class': '','available': False},{'class': '','available': False},]},
-        {'name': '','active': True,'classes': [{'class': '','available': False},{'class': '','available': False},{'class': '','available': False},{'class': '','available': False},]},
-        {'name': '','active': True,'classes': [{'class': '','available': False},{'class': '','available': False},{'class': '','available': False},{'class': '','available': False},]},
-        {'name': '','active': True,'classes': [{'class': '','available': False},{'class': '','available': False},{'class': '','available': False},{'class': '','available': False},]},
+        }
     ]
-    no_losers = []
 
-    def on_close(self):
-        super().on_close()
-
-    def open(self):
-        super().open()
-        # update(self)
+    # def on_close(self):
+    #     super().on_close()
+    #
+    # def open(self):
+    #     super().open()
+    #     # update(self)
 
     @staticmethod
     def get_clients():
@@ -85,6 +78,10 @@ class MyWebSocket(WebSocket):
 
 def calc_battles():
     gamers = MyWebSocket.gamers
+
+    if len(MyWebSocket.battles):
+        return
+
     no_losers = []
     battles = []
     for index, gamer in enumerate(gamers):
@@ -97,9 +94,10 @@ def calc_battles():
     if len(no_losers) <= len(gamers)/2:
         for index, gamer in enumerate(no_losers):
             if index % 2:
-                battles.append({
-                    'gamers': [no_losers[index - 1], no_losers[index]]
-                })
+                pass  # auto append winners
+                # battles.append({
+                #     'gamers': [no_losers[index - 1], no_losers[index]]
+                # })
     MyWebSocket.battles = battles
 
 
@@ -114,6 +112,20 @@ def refresh_gamers(client=None):
     for u in clients:
         clients[u].call('updateGamers', **{
             'gamers': MyWebSocket.gamers
+        })
+
+
+def refresh_active_battle_counter(client=None):
+    if client and isinstance(client, WebSocket):
+        clients = {'c': client}
+    else:
+        clients = MyWebSocket.get_clients()
+        calc_battles()
+        refresh_battles()
+
+    for u in clients:
+        clients[u].call('updateActiveBattleCounter', **{
+            'counter': MyWebSocket.active_battle_counter
         })
 
 
@@ -142,32 +154,56 @@ def refresh_active_battle(client=None):
 
 def set_gamers(*args, **kwargs):
     if kwargs.get('gamers', False):
+        print('set gamers')
         gamers = kwargs.get('gamers')
         MyWebSocket.gamers = gamers
 
         refresh_gamers()
 
 
+def set_active_battle_counter(*args, **kwargs):
+    if kwargs.get('counter', False):
+        print('set active battle counter: ', kwargs.get('counter'))
+        counter = kwargs.get('counter')
+        MyWebSocket.active_battle_counter = counter
+
+        refresh_active_battle_counter()
+
+
 def set_active_battle(*args, **kwargs):
     if kwargs.get('activeBattle', -1) >= 0:
-        print('in battle: ', kwargs.get('activeBattle'))
+        print('set active battle index: ', kwargs.get('activeBattle'))
         MyWebSocket.active_battle = kwargs.get('activeBattle')
 
         refresh_active_battle()
 
+    if kwargs.get('battles', False):
+        print('set battles')
+
+        battles = kwargs.get('battles')
+        MyWebSocket.battles = battles
+
+        refresh_battles()
+
 
 def updateMe(*args, **kwargs):
     if isinstance(args[0], WebSocket):
+
+        print('force update one client')
+
         client = args[0]
         refresh_gamers(client)
         refresh_battles(client)
         refresh_active_battle(client)
+        refresh_active_battle_counter(client)
 
 
 MyWebSocket.ROUTES['updateMe'] = updateMe
 MyWebSocket.ROUTES['setGamers'] = set_gamers
 MyWebSocket.ROUTES['setActiveBattle'] = set_active_battle
-MyWebSocket.ROUTES['getTime'] = lambda t: time.time()
+MyWebSocket.ROUTES['setActiveBattleCounter'] = set_active_battle_counter
+# MyWebSocket.ROUTES['setBattles'] = set_battles
+# MyWebSocket.ROUTES['getTime'] = lambda t: time.time()
 
 if __name__ == "__main__":
 
