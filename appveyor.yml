@@ -1,0 +1,36 @@
+version: 0.0.{build}
+skip_non_tags: true
+image: Visual Studio 2015
+clone_folder: C:\projects\HS
+init:
+- ps: git config --global core.autocrlf false
+environment:
+  PIP: C:/Python35/Scripts/pip.exe
+  PYTHON: C:/Python35/python.exe
+install:
+- ps: >-
+    cd C:\projects\HS
+    C:/Python35/Scripts/pip.exe install --disable-pip-version-check --user --upgrade pip setuptools
+    C:/Python35/Scripts/pip.exe install -r requirements.txt
+build: off
+test_script:
+- cmd: >-
+    C:/Python35/Scripts/pyinstaller.exe ws.py --log-level CRITICAL -y -F -n server.exe
+after_test:
+- ps: >-
+    mkdir hs
+    cp -r static hs
+    mv dist/server.exe hs
+artifacts:
+- path: hs
+  name: hs
+  type: zip
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: aqxOwrvNEIZ2ian/bj0ZyfEzMFNWalV5zDfFqpcxfZX47FAIW9ud6kgCU2jm/fMk
+  draft: true
+  prerelease: true
+  force_update: true
+  on:
+    branch: master
