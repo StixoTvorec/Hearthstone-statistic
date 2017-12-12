@@ -22,7 +22,9 @@ test_script:
 after_test:
 - ps: >-
     mkdir hs
+
     cp -r static hs
+
     mv dist/server.exe hs
 artifacts:
 - path: hs
