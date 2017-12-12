@@ -33,6 +33,8 @@ after_test:
 
     cp -r static hs/hs
 
+    rm hs/hs/static/css/*.less
+
     mv dist/server.exe hs/hs
 artifacts:
 - path: hs
