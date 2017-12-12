@@ -218,9 +218,17 @@ if __name__ == "__main__":
         except Exception as e:
             print('Could not daemonize, script will run in foreground. Error was: "%s"' % str(e), file=sys.stderr)
 
+
+    class MyStaticFileHandler(tornado.web.StaticFileHandler):
+        def write_error(self, status_code, *args, **kwargs):
+            if status_code in [404]:
+                self.write('404 Not Found')
+            else:
+                super().write_error(status_code, *args, **kwargs)
+
     http_server = tornado.httpserver.HTTPServer(tornado.web.Application((
         (r"/ws/", MyWebSocket),
-        (r'/(.*)', tornado.web.StaticFileHandler, {
+        (r'/(.*)', MyStaticFileHandler, {
             'path': os.path.join(project_root, 'static'),
             'default_filename': 'index.html'
         }),
