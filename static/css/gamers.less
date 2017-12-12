@@ -9,7 +9,7 @@
   display: block;
   background: url(/img/gamers-bg.jpg);
   .list {
-    letter-spacing: -1em;
+    letter-spacing: -1rem;
     position: absolute;
     width: @gamers-list-width;
     height: 1080px;
@@ -41,15 +41,20 @@
       color: @gamers-color;
       text-align: center;
       letter-spacing: initial;
-      font-size: 1.6em;
-      padding-top: .5em;
-      padding-bottom: .5em;
+      font-size: 1.6rem;
+      padding-top: .5rem;
+      padding-bottom: .5rem;
+      min-height: 1rem;
+      &>span {
+        display: inline-block;
+        min-height: 1rem;
+      }
     }
     &.user-lose .image:after {
       content: '';
       display: block;
       position: absolute;
-      width: .4em;
+      width: .4rem;
       height: 100%;
       background-color: @gamers-color;
       transform: rotateZ(.5rad);

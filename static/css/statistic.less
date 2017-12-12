@@ -54,6 +54,17 @@
       display: inline-block;
       width: 25%;
       text-align: center;
+      &.class-lose:after {
+        content: '';
+        display: block;
+        position: absolute;
+        width: .2em;
+        height: 90%;
+        transform: rotateZ(.5rad);
+        top: .1em;
+        left: 46%;
+        background-color: @gamers-color;
+      }
     }
   }
   .counters {

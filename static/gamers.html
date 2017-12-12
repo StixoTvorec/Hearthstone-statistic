@@ -9,10 +9,10 @@
 <body>
 <section class="content-wrapper fill-height" id="gamers">
     <div class="list">
-        <div v-for="(gamer, index) in gamers" v-if="index<(gamers.length/2)" class="user" :class="{'user-lose': !gamer.active}">
+        <div v-for="(gamer, index) in gamers" v-if="index%2 == 0" class="user" :class="{'user-lose': !gamer.active}">
             <div class="image">
-                <!--<img :src="'/img/users/' + (index + 1) + '.png'">-->
-                <img src="/img/users/1.png">
+                <img :src="'/img/users/' + (index + 1) + '.png'" onerror="this.src='/img/users/_default.png'">
+                <!--<img src="/img/users/1.png">-->
             </div>
             <div class="name">
                 <span>{{ gamer.name }}</span>
@@ -22,10 +22,10 @@
 
     <div class="list pull-right">
         <div class="user"
-         v-for="(gamer, index) in gamers" v-if="index>=(gamers.length/2)" :class="{'user-lose': !gamer.active}">
+         v-for="(gamer, index) in gamers" v-if="index%2" :class="{'user-lose': !gamer.active}">
             <div class="image">
-                <!--<img :src="'/img/users/' + (index + 1) + '.png'">-->
-                <img src="/img/users/1.png">
+                <img :src="'/img/users/' + (index + 1) + '.png'" onerror="this.src='/img/users/_default.png'">
+                <!--<img src="/img/users/1.png">-->
             </div>
             <div class="name">
                 <span>{{ gamer.name }}</span>

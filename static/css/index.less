@@ -73,6 +73,10 @@
     .button {
       border-radius: 0;
     }
+    .select + label {
+      top: .3rem;
+      position: relative;
+    }
   }
   #peoples {
     position: relative;
@@ -98,11 +102,31 @@
     }
   }
   .current-batle {
+    .title {
+      padding-top: 1rem;
+    }
     .image {
       max-width: 12rem;
     }
     & + .current-batle {
         padding-top: 2rem;
+    }
+    .has-input {
+        max-width: 10rem;
+    }
+  }
+  .save-all-gamers {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    z-index: 4;
+    text-align: center;
+    .button-wrapper {
+      position: absolute;
+      //right: 1rem;
+      top: 4rem;
+      display: inline-block;
     }
   }
 }

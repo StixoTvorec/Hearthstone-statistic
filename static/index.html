@@ -20,11 +20,12 @@
                     <tab name="Gamers list">
                         <h2 class="title">Gamers list</h2>
                         <div class="gamers">
-                            <div v-for="(item, index) in storage.gamers" class="gamer media">
+                            <div v-for="(item, index) in gamers" class="gamer media">
                                 <div class="media-left">
                                     <div class="image" :class="{'user-lose': !item.active}">
-                                        <!--<img :src="'/img/users/'+(index+1)+'.png'">-->
-                                        <img src="/img/users/1.png">
+                                        <img :src="'/img/users/'+(index+1)+'.png'"
+                                             onerror="this.src='/img/users/_default.png'">
+                                        <!--<img src="/img/users/1.png">-->
                                     </div>
                                 </div>
                                 <div class="name media-content">
@@ -47,12 +48,22 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="field has-addons level">
+                                    <!--<div class="field has-addons level">-->
+                                    <div class="field level">
                                         <div class="control">
                                             <input class="input" v-model="item.name">
                                         </div>
                                         <div class="control">
-                                            <a class="button" @click="updateGamers()">Accept</a>
+                                            <!--<a class="button" @click="updateGamers()">Save all</a>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="gamers.length" class="save-all-gamers">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="button-wrapper">
+                                            <a class="button is-dark" @click="updateGamers()">Save all</a>
                                         </div>
                                     </div>
                                 </div>
@@ -62,14 +73,14 @@
                     <tab name="Battles list">
                         <h2 class="title">Battles list</h2>
                         <form class="battles columns is-multiline is-mobile">
-                            <div v-for="(battle, battle_index) in storage.battles" class="battle columns is-mobile column is-12">
+                            <div v-for="(battle, battle_index) in battles" class="battle columns is-mobile column is-12">
                                 <div class="battle-hr"></div>
                                 <div v-for="(item, index) in battle.gamers" class="user columns is-mobile column is-6">
                                     <div class="is-flex-mobile select-input has-text-centered column is-3-touch is-4-mobile">
                                         <label v-if="index%2 == 0" class="is-padding-mobile" title="Active battle">
                                             <input class="is-hidden" type="radio" name="battle"
-                                                   v-model="storage.activeBattle"
-                                                   :checked="storage.activeBattle == battle_index"
+                                                   v-model="activeBattle"
+                                                   :checked="activeBattle == battle_index"
                                                    :value="battle_index">
                                             <a class="button is-light"></a>
                                         </label>
@@ -77,14 +88,16 @@
                                            @click.ctrl="deleteBattle(battle_index)" title="DELETE BATTLE"></a>
                                     </div>
                                     <div class="is-flex-mobile column is-6-mobile is-2-desktop is-3-tablet has-text-centered">
-                                        <div class="image" :class="{'user-lose': !storage.gamers[item].active}">
-                                            <img src="/img/users/1.png">
+                                        <div class="image" :class="{'user-lose': !gamers[item].active}">
+                                            <!--<img src="/img/users/1.png">-->
+                                            <img :src="'/img/users/'+(index+1)+'.png'"
+                                             onerror="this.src='/img/users/_default.png'">
                                         </div>
                                     </div>
                                     <div class="name column is-9-tablet is-hidden-mobile">
-                                        <h3 class="subtitle">
+                                        <h3 class="select">
                                             <select v-model="battle.gamers[index]">
-                                                <option v-for="(gamer, gamer_index) in storage.gamers"
+                                                <option v-for="(gamer, gamer_index) in gamers"
                                                         :value="gamer_index">{{ gamer.name }}</option>
                                             </select>
                                         </h3>
@@ -92,31 +105,32 @@
                                 </div>
                             </div>
                         </form>
-                        <div v-if="storage.gamers.length" class="has-text-centered">
-                            <a class="button" @click="addBattle()">Add battle</a>
-                            <a class="button is-dark" @click="setActiveBattle()">Save</a>
+                        <div v-if="gamers.length" class="has-text-centered">
+                            <a class="button is-dark" @click="addBattle()">Add battle</a>
+                            <a class="button" @click="setActiveBattle()">Save</a>
                         </div>
                     </tab>
                     <tab name="Current battle">
                         <h2 class="title">Current battle</h2>
-                        <div class="current-batle media" v-if="storage.gamers.length">
-                            <div v-for="(gamer, index) in getActiveBattle().gamers" class="tile is-vertical is-6">
-                                <!--<div class="image"><img :src="'/img/users/' + (1 + gamer) + '.png'"></div>-->
-                                <div class="image"><img :src="'/img/users/' + 1 + '.png'"></div>
+                        <div class="current-batle media" v-if="gamers.length">
+                            <div v-for="(gamer, index) in (battles[activeBattle] || {}).gamers" class="tile is-vertical is-6">
+                                <div class="image"><img :src="'/img/users/' + (1 + gamer) + '.png'"
+                                                        onerror="this.src='/img/users/_default.png'"></div>
+                                <!--<div class="image"><img :src="'/img/users/' + 1 + '.png'"></div>-->
                                 <h2 class="title">
-                                    {{ storage.gamers[gamer].name }}
+                                    {{ gamers[gamer].name }}
                                 </h2>
-                                <h3>
-                                    <input v-model="storage.activeBattleCounter[index]">
+                                <h3 class="has-input">
+                                    <input class="input" v-model="activeBattleCounter[index]">
                                 </h3>
                             </div>
                         </div>
-                        <div v-if="storage.gamers.length" class="current-batle has-text-centered">
+                        <div v-if="gamers.length" class="current-batle has-text-centered">
                             <a class="button" @click="saveActiveBattleCounter()">Save</a>
                         </div>
                     </tab>
                 </tabs>
-                <div class="force-update button" @click="forceUpdate()">Force update</div>
+                <a class="force-update button is-info" @click="forceUpdate()">Force update</a>
             </div>
         </div>
     </div>

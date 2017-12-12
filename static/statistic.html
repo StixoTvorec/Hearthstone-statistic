@@ -13,32 +13,19 @@
     </div>
     <div class="classes-wrapper">
         <div class="classes">
-            <div class="user-1">
+            <div v-for="(gamer, index) in (battles[activeBattle] || {}).gamers" :class="'user-' + (index + 1)">
                 <div class="name">
-                    Gamer name
+                    {{ gamers[gamer].name }}
                 </div>
-                <div class="class"><i class="druid"></i></div>
-                <div class="class"><i class="hunter"></i></div>
-                <div class="class"><i class="mage"></i></div>
-                <div class="class"><i class="paladin"></i></div>
-            </div>
-            <div class="user-2">
-                <div class="name">
-                    Gamer name
+                <div v-for="c in gamers[gamer].classes" class="class" :class="{'class-lose': !c.available}">
+                    <i :class="c.class"></i>
                 </div>
-                <div class="class"><i class="priest"></i></div>
-                <div class="class"><i class="rogue"></i></div>
-                <div class="class"><i class="shaman"></i></div>
-                <div class="class"><i class="warlock"></i></div>
             </div>
         </div>
     </div>
     <div class="counters">
-        <div class="user-1">
-            <div class="counter">0</div>
-        </div>
-        <div class="user-2">
-            <div class="counter">0</div>
+        <div v-for="(gamer, index) in (battles[activeBattle] || {}).gamers" :class="'user-' + (index + 1)">
+            <div class="counter">{{ activeBattleCounter[index] }}</div>
         </div>
     </div>
 </section>

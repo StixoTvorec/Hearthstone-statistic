@@ -6,13 +6,6 @@
         return;
     }
 
-    const appStorage = {
-        battles: [],
-        gamers: [],
-        activeBattle: 0,
-        activeBattleCounter: [0, 0]
-    };
-
     const classes = [
         'druid',
         'hunter',
@@ -37,28 +30,16 @@
     RPC.addRoute('updateBattles', (data) => {
         console.log('updateBattles route');
         console.log(data);
-        let i;
         if(typeof data['battles'] !== 'undefined') {
-            appStorage.battles = [];
-            for (i in data['battles']) {
-                if (data['battles'].hasOwnProperty(i)) {
-                    appStorage.battles.push(data['battles'][i]);
-                }
-            }
+            vm.battles = data['battles'];
         }
     });
 
     RPC.addRoute('updateGamers', (data) => {
         console.log('updateGamers route');
         console.log(data);
-        let i;
         if(typeof data['gamers'] !== 'undefined') {
-            appStorage.gamers = [];
-            for(i in data['gamers']) {
-                if(data['gamers'].hasOwnProperty(i)) {
-                    appStorage.gamers.push(data['gamers'][i]);
-                }
-            }
+            vm.gamers = data['gamers'];
         }
     });
 
@@ -66,7 +47,7 @@
         console.log('updateActiveBattle route');
         console.log(data);
         if(typeof data['activeBattle'] !== 'undefined') {
-            appStorage.activeBattle = data['activeBattle'];
+            vm.activeBattle = data['activeBattle'];
         }
     });
 
@@ -74,7 +55,7 @@
         console.log('updateActiveBattleCounter route');
         console.log(data);
         if(typeof data['counter'] !== 'undefined') {
-            appStorage.activeBattleCounter = data['counter'];
+            vm.activeBattleCounter = data['counter'];
         }
     });
 
@@ -83,15 +64,21 @@
         vm = new Vue({
             el: '#statistic',
             data: {
-                storage: appStorage,
+                battles: [],
+                gamers: [],
+                activeBattle: 0,
+                activeBattleCounter: [0, 0]
             },
             methods: {
-                getActiveBattle: function () {
-                    return appStorage.battles[this.storage.activeBattle] || {};
-                }
             },
+            mounted() {
+                this.$nextTick(() => {
+                    forceUpdate();
+                });
+            }
         });
-        forceUpdate();
+        console.log(vm);
+        console.log(vm.gamers);
     }
 
     // all gamers list
@@ -99,11 +86,18 @@
         vm = new Vue({
             el: '#gamers',
             data: {
-                storage: appStorage
+                battles: [],
+                gamers: [],
+                activeBattle: 0,
+                activeBattleCounter: [0, 0]
             },
-            methods: {}
+            methods: {},
+            mounted() {
+                this.$nextTick(() => {
+                    forceUpdate();
+                });
+            }
         });
-        forceUpdate();
     }
 
     // index file, main config
@@ -111,28 +105,26 @@
         vm = new Vue({
             el: '#config',
             data: {
-                storage: appStorage,
+                battles: [],
+                gamers: [],
+                activeBattle: 0,
+                activeBattleCounter: [0, 0],
                 classes: classes,
             },
             methods: {
                 updateGamers: function () {
-                    RPC.call('setGamers', {gamers: this.storage.gamers})
+                    RPC.call('setGamers', {gamers: this.gamers})
                         .then((data) => {
                             successMessage();
                         }, (error) => {
                             errorMessage(error);
                         }).done();
                 },
-                forceUpdate: function () {
-                    forceUpdate();
-                },
-                getActiveBattle: function () {
-                    return appStorage.battles[this.storage.activeBattle] || [];
-                },
+                forceUpdate: forceUpdate,
                 setActiveBattle: function () {
                     RPC.call('setActiveBattle', {
-                            activeBattle: this.storage.activeBattle,
-                            battles: this.storage.battles
+                            activeBattle: this.activeBattle,
+                            battles: this.battles
                         })
                         .then((data) => {
                             successMessage();
@@ -141,18 +133,18 @@
                         }).done();
                 },
                 addBattle: function () {
-                    this.storage.battles.push({'gamers': [0, 1]});
+                    this.battles.push({'gamers': [0, 1]});
                 },
                 deleteBattle: function (index) {
-                    if (index < this.storage.activeBattle) {
-                        this.storage.activeBattle -= 1;
+                    if (index < this.activeBattle) {
+                        this.activeBattle -= 1;
                     }
-                    this.storage.battles = this.storage.battles.slice(0, index)
-                        .concat(this.storage.battles.slice(index + 1,));
+                    this.battles = this.battles.slice(0, index)
+                        .concat(this.battles.slice(index + 1,));
                 },
                 saveActiveBattleCounter: function () {
                     RPC.call('setActiveBattleCounter', {
-                            'counter': this.storage.activeBattleCounter
+                            'counter': this.activeBattleCounter
                         })
                         .then((data) => {
                             successMessage();
@@ -168,10 +160,16 @@
                     if (elem) {
                         elem.click();
                     }
+                    // forceUpdate();
                 });
             }
         });
     }
+
+    RPC.addEventListener('onconnect', (e) => {
+    });
+
+    RPC.connect();
 
     function forceUpdate() {
         RPC.call('updateMe', {}).then((data) => {
@@ -180,11 +178,6 @@
                 errorMessage(error);
             }).done();
     }
-
-    RPC.addEventListener('onconnect', (e) => {
-    });
-
-    RPC.connect();
 
     function post(url, method, data) {
         data = data || {};
@@ -196,12 +189,14 @@
         });
     }
     function successMessage(message) {
-        showToastr('success', message || 'Success update!');
+        showNotify('success', message || 'Success update!');
     }
     function errorMessage(message) {
-        showToastr('error', message || 'Error!');
+        showNotify('error', message || 'Error!');
     }
-    function showToastr(type, message) {
-        vm.$snotify[type](message)
+    function showNotify(type, message) {
+        if(typeof vm.$snotify !== 'undefined') {
+            vm.$snotify[type](message);
+        }
     }
 })();
