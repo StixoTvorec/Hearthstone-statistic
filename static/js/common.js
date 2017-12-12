@@ -140,7 +140,7 @@
                         this.activeBattle -= 1;
                     }
                     this.battles = this.battles.slice(0, index)
-                        .concat(this.battles.slice(index + 1,));
+                        .concat(this.battles.slice(index + 1));
                 },
                 saveActiveBattleCounter: function () {
                     RPC.call('setActiveBattleCounter', {
