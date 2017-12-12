@@ -8,8 +8,12 @@ environment:
   PYTHON: C:/Python35/python.exe
 install:
 - ps: >-
-    C:/Python35/Scripts/pip.exe install --disable-pip-version-check --user --upgrade pip setuptools
+    cd C:\projects\hearthstone-statistic
+
+    C:/Python35/Scripts/pip.exe install --upgrade pip setuptools
+
     C:/Python35/Scripts/pip.exe install pyinstaller
+
     C:/Python35/Scripts/pip.exe install -r requirements.txt
 build: off
 test_script:
