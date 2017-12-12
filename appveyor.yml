@@ -16,9 +16,11 @@ install:
 
     Install-Product node ''
 
+    npm install -g less
+
     npm install -g less-watch-compiler
 
-    less-watch-compiler --run-once static/css static/css --main-file main.less
+    less-watch-compiler
 build: off
 test_script:
 - cmd: >-

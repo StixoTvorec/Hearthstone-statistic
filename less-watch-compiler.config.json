@@ -1,0 +1,7 @@
+{
+    "watchFolder": "static/css",
+    "outputFolder": "static/css",
+    "mainFile": "main.less",
+    "sourceMap": false,
+    "runOnce": true
+}
