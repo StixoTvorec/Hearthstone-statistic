@@ -8,13 +8,17 @@ environment:
   PYTHON: C:/Python35/python.exe
 install:
 - ps: >-
-    cd C:\projects\hearthstone-statistic
-
     C:/Python35/Scripts/pip.exe install --upgrade pip setuptools
 
     C:/Python35/Scripts/pip.exe install pyinstaller
 
     C:/Python35/Scripts/pip.exe install -r requirements.txt
+
+    Install-Product node ''
+
+    npm install -g less-watch-compiler
+
+    less-watch-compiler --run-once static/css static/css --main-file main.less
 build: off
 test_script:
 - cmd: >-
@@ -23,9 +27,11 @@ after_test:
 - ps: >-
     mkdir hs
 
-    cp -r static hs
+    mkdir hs/hs
 
-    mv dist/server.exe hs
+    cp -r static hs/hs
+
+    mv dist/server.exe hs/hs
 artifacts:
 - path: hs
   name: hs
