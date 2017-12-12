@@ -1,7 +1,6 @@
 version: 0.0.{build}
 skip_non_tags: true
 image: Visual Studio 2015
-clone_folder: C:\projects\HS
 init:
 - ps: git config --global core.autocrlf false
 environment:
@@ -9,7 +8,6 @@ environment:
   PYTHON: C:/Python35/python.exe
 install:
 - ps: >-
-    cd C:\projects\HS
     C:/Python35/Scripts/pip.exe install --disable-pip-version-check --user --upgrade pip setuptools
     C:/Python35/Scripts/pip.exe install -r requirements.txt
 build: off
