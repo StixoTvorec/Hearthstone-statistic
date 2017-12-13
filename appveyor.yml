@@ -1,4 +1,4 @@
-version: 0.0.{build}
+version: 0.1.{build}
 skip_non_tags: true
 image: Visual Studio 2015
 init:
@@ -33,11 +33,11 @@ after_test:
 
     uglifyjs --compress --mangle -o static/js/vue-components.js static/js/vue-components.js
 
-    html-minifier static/index.html --output static/index.html --html5 --remove-comments --remove-tag-whitespace --remove-empty-attributes --remo --remove-empty-elements --collapse-inline-tag-whitespace --remove-attribute-quotes --collapse-whitespace
+    html-minifier static/index.html --output static/index.html --html5 --remove-comments --remove-tag-whitespace --collapse-inline-tag-whitespace --remove-attribute-quotes --collapse-whitespace
 
-    html-minifier static/statistic.html --output static/statistic.html --html5 --remove-comments --remove-tag-whitespace --remove-empty-attributes --remo --remove-empty-elements --collapse-inline-tag-whitespace --remove-attribute-quotes --collapse-whitespace
+    html-minifier static/statistic.html --output static/statistic.html --html5 --remove-comments --remove-tag-whitespace --collapse-inline-tag-whitespace --remove-attribute-quotes --collapse-whitespace
 
-    html-minifier static/gamers.html --output static/gamers.html --html5 --remove-comments --remove-tag-whitespace --remove-empty-attributes --remo --remove-empty-elements --collapse-inline-tag-whitespace --remove-attribute-quotes --collapse-whitespace
+    html-minifier static/gamers.html --output static/gamers.html --html5 --remove-comments --remove-tag-whitespace --collapse-inline-tag-whitespace --remove-attribute-quotes --collapse-whitespace
 
     cp -r static hs/hs
 
