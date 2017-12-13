@@ -129,6 +129,20 @@
                             <a class="button" @click="saveActiveBattleCounter()">Save</a>
                         </div>
                     </tab>
+                    <tab name="Main config">
+                        <h2 class="title">Config</h2>
+                        <div class="main-config">
+                            <div class="media">
+                                <div class=""></div>
+                            </div>
+                            <div class="media-content">
+                                <label class="checkbox">
+                                    <input v-model="config.responsive">
+                                    Enable responsive gamers list
+                                </label>
+                            </div>
+                        </div>
+                    </tab>
                 </tabs>
                 <a class="force-update button is-info" @click="forceUpdate()">Force update</a>
             </div>

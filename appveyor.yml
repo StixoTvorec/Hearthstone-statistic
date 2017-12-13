@@ -8,20 +8,25 @@ environment:
   PYTHON: C:/Python35/python.exe
 install:
 - ps: >-
-    C:/Python35/Scripts/pip.exe install --upgrade pip setuptools
-
-    C:/Python35/Scripts/pip.exe install pyinstaller
+    C:/Python35/Scripts/pip.exe install --upgrade pip setuptools pyinstaller
 
     C:/Python35/Scripts/pip.exe install -r requirements.txt
 
     Install-Product node ''
 
-    npm install -g less
+    npm install -g less less-watch-compiler less-plugin-clean-css
 
-    npm install -g less-watch-compiler
-
-    less-watch-compiler
+    npm install -g uglify-js@github:mishoo/UglifyJS2#harmony
 build: off
+before_test:
+- cmd: >-
+    less-watch-compiler
+
+    uglifyjs --compress --mangle -o static/js/common.js static/js/common.js
+
+    uglifyjs --compress --mangle -o static/js/vue-components.js static/js/vue-components.js
+
+#    html-minifier --html5 --remove-comments --remove-tag-whitespace --remove-empty-attributes --remo --remove-empty-elements --collapse-inline-tag-whitespace --remove-attribute-quotes --collapse-whitespace gamers.html
 test_script:
 - cmd: >-
     C:/Python35/Scripts/pyinstaller.exe ws.py --log-level CRITICAL -y -F -n server.exe
@@ -33,7 +38,7 @@ after_test:
 
     cp -r static hs/hs
 
-    rm hs/hs/static/css/*.less
+    rm hs/hs/static/css/*.less hs/hs/static/css/common.js hs/hs/static/css/vue-components.js
 
     mv dist/server.exe hs/hs
 artifacts:

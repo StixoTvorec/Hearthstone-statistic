@@ -3,5 +3,6 @@
     "outputFolder": "static/css",
     "mainFile": "main.less",
     "sourceMap": false,
+    "plugins": "clean-css",
     "runOnce": true
 }
