@@ -14,31 +14,34 @@ install:
 
     Install-Product node ''
 
-    npm install -g less less-watch-compiler less-plugin-clean-css
-
-    npm install -g uglify-js@github:mishoo/UglifyJS2#harmony
+    npm install -g less less-plugin-clean-css html-minifier uglify-js@github:mishoo/UglifyJS2#harmony
 build: off
-before_test:
-- cmd: >-
-    less-watch-compiler
-
-    uglifyjs --compress --mangle -o static/js/common.js static/js/common.js
-
-    uglifyjs --compress --mangle -o static/js/vue-components.js static/js/vue-components.js
-
-#    html-minifier --html5 --remove-comments --remove-tag-whitespace --remove-empty-attributes --remo --remove-empty-elements --collapse-inline-tag-whitespace --remove-attribute-quotes --collapse-whitespace gamers.html
 test_script:
 - cmd: >-
     C:/Python35/Scripts/pyinstaller.exe ws.py --log-level CRITICAL -y -F -n server.exe
+
+# Prepare files and directories
 after_test:
 - ps: >-
     mkdir hs
 
     mkdir hs/hs
 
+    lessc --clean-css="--s1 --advanced" .\static\css\main.less .\static\css\main.сss
+
+    uglifyjs --compress --mangle -o static/js/common.js static/js/common.js
+
+    uglifyjs --compress --mangle -o static/js/vue-components.js static/js/vue-components.js
+
+    html-minifier static/index.html --output static/index.html --html5 --remove-comments --remove-tag-whitespace --remove-empty-attributes --remo --remove-empty-elements --collapse-inline-tag-whitespace --remove-attribute-quotes --collapse-whitespace
+
+    html-minifier static/statistic.html --output static/statistic.html --html5 --remove-comments --remove-tag-whitespace --remove-empty-attributes --remo --remove-empty-elements --collapse-inline-tag-whitespace --remove-attribute-quotes --collapse-whitespace
+
+    html-minifier static/gamers.html --output static/gamers.html --html5 --remove-comments --remove-tag-whitespace --remove-empty-attributes --remo --remove-empty-elements --collapse-inline-tag-whitespace --remove-attribute-quotes --collapse-whitespace
+
     cp -r static hs/hs
 
-    rm hs/hs/static/css/*.less hs/hs/static/css/common.js hs/hs/static/css/vue-components.js
+    rm hs/hs/static/css/*.less
 
     mv dist/server.exe hs/hs
 artifacts:

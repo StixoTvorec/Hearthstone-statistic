@@ -155,12 +155,16 @@
             },
             mounted() {
                 this.$nextTick(() => {
-                    let selector = window.location.hash ? 'a[href="' + window.location.hash + '"]' : '.tabs>ul>li>a';
+                    let firstElemSelector = '.tabs>ul>li>a';
+                    let selector = window.location.hash ? 'a[href="' + window.location.hash + '"]' : firstElemSelector;
                     const elem = document.querySelector(selector);
                     if (elem) {
                         elem.click();
                     }
-                    // forceUpdate();
+                    else {
+                        document.querySelector(firstElemSelector).click();
+                    }
+                    forceUpdate();
                 });
             }
         });

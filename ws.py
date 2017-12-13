@@ -2,14 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import os
-import tornado.web
-import tornado.httpserver
-import tornado.ioloop
-import time
-from wsrpc import WebSocketRoute, WebSocket
-from tornado.web import (RequestHandler, HTTPError)
+from tornado import web, httpserver, ioloop
+from wsrpc import WebSocket
 import sys
-import json
+import logging
 
 allowFork = False
 project_root = os.getcwd()
@@ -17,22 +13,6 @@ options = {
     'port': 8080,
     'listen': '127.0.0.1'
 }
-
-classes = {
-    'druid': {},
-    'hunter': {},
-    'mage': {},
-    'paladin': {},
-    'priest': {},
-    'rogue': {},
-    'shaman': {},
-    'warlock': {},
-    'warrior': {},
-}
-
-
-def time_now():
-    return time.strftime('%Y-%m-%d %H:%M:%S')
 
 
 class MyWebSocket(WebSocket):
@@ -64,13 +44,6 @@ class MyWebSocket(WebSocket):
         }
     ]
 
-    # def on_close(self):
-    #     super().on_close()
-    #
-    # def open(self):
-    #     super().open()
-    #     # update(self)
-
     @staticmethod
     def get_clients():
         return MyWebSocket._CLIENTS
@@ -82,30 +55,27 @@ def calc_battles():
     if len(MyWebSocket.battles):
         return
 
-    no_losers = []
     battles = []
     for index, gamer in enumerate(gamers):
-        if gamer.get('active'):
-            no_losers.append(index)
         if index % 2:
             battles.append({
                 'gamers': [index - 1, index]
             })
-    if len(no_losers) <= len(gamers)/2:
-        for index, gamer in enumerate(no_losers):
-            if index % 2:
-                pass  # auto append winners
-                # battles.append({
-                #     'gamers': [no_losers[index - 1], no_losers[index]]
-                # })
     MyWebSocket.battles = battles
 
 
-def refresh_gamers(client=None):
+def _get_clients(client=None):
     if client and isinstance(client, WebSocket):
         clients = {'c': client}
     else:
         clients = MyWebSocket.get_clients()
+    return clients
+
+
+def refresh_gamers(client=None):
+    clients = _get_clients(client)
+
+    if len(clients) > 1:
         calc_battles()
         refresh_battles()
 
@@ -116,10 +86,9 @@ def refresh_gamers(client=None):
 
 
 def refresh_active_battle_counter(client=None):
-    if client and isinstance(client, WebSocket):
-        clients = {'c': client}
-    else:
-        clients = MyWebSocket.get_clients()
+    clients = _get_clients(client)
+
+    if len(clients) > 1:
         calc_battles()
         refresh_battles()
 
@@ -130,10 +99,8 @@ def refresh_active_battle_counter(client=None):
 
 
 def refresh_battles(client=None):
-    if client and isinstance(client, WebSocket):
-        clients = {'c': client}
-    else:
-        clients = MyWebSocket.get_clients()
+    clients = _get_clients(client)
+
     for u in clients:
         clients[u].call('updateBattles', **{
             'battles': MyWebSocket.battles
@@ -141,10 +108,7 @@ def refresh_battles(client=None):
 
 
 def refresh_active_battle(client=None):
-    if client and isinstance(client, WebSocket):
-        clients = {'c': client}
-    else:
-        clients = MyWebSocket.get_clients()
+    clients = _get_clients(client)
 
     for u in clients:
         clients[u].call('updateActiveBattle', **{
@@ -186,7 +150,7 @@ def set_active_battle(*args, **kwargs):
         refresh_battles()
 
 
-def updateMe(*args, **kwargs):
+def update_me(*args, **kwargs):
     if isinstance(args[0], WebSocket):
 
         print('force update one client')
@@ -198,12 +162,10 @@ def updateMe(*args, **kwargs):
         refresh_active_battle_counter(client)
 
 
-MyWebSocket.ROUTES['updateMe'] = updateMe
+MyWebSocket.ROUTES['updateMe'] = update_me
 MyWebSocket.ROUTES['setGamers'] = set_gamers
 MyWebSocket.ROUTES['setActiveBattle'] = set_active_battle
 MyWebSocket.ROUTES['setActiveBattleCounter'] = set_active_battle_counter
-# MyWebSocket.ROUTES['setBattles'] = set_battles
-# MyWebSocket.ROUTES['getTime'] = lambda t: time.time()
 
 if __name__ == "__main__":
 
@@ -218,21 +180,14 @@ if __name__ == "__main__":
         except Exception as e:
             print('Could not daemonize, script will run in foreground. Error was: "%s"' % str(e), file=sys.stderr)
 
-
-    class MyStaticFileHandler(tornado.web.StaticFileHandler):
-        def write_error(self, status_code, *args, **kwargs):
-            if status_code in [404]:
-                self.write('404 Not Found')
-            else:
-                super().write_error(status_code, *args, **kwargs)
-
-    http_server = tornado.httpserver.HTTPServer(tornado.web.Application((
+    logging.getLogger('tornado.access').disabled = True
+    http_server = httpserver.HTTPServer(web.Application((
         (r"/ws/", MyWebSocket),
-        (r'/(.*)', MyStaticFileHandler, {
+        (r'/(.*)', web.StaticFileHandler, {
             'path': os.path.join(project_root, 'static'),
             'default_filename': 'index.html'
         }),
-    ), cookie_secret='1F9Swu*xO1edH5rf$OJXKS9U4*dNjVgYmTWP9Z'))
+    ), cookie_secret='F19SOYmT4JXKS9NjVg*$d91exOrfZdH5WPUwu*'))
 
     http_server.listen(options['port'], address=options['listen'])
-    tornado.ioloop.IOLoop.instance().start()
+    ioloop.IOLoop.instance().start()
