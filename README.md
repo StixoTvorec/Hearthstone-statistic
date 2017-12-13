@@ -8,20 +8,21 @@
     - <details>
         <summary>Photo, status (left the game or not), player's name.</summary>
         
-        ```bash
-        123
-        ```
+        ![Main page photo 1](docs/main_1.jpg)
+        ![Main page photo 2](docs/main_2.jpg)
+        ![Main page photo 3](docs/main_3.jpg)
       
       </details>
 1. Displays the current battle:
-    - Statistics of the current battle (account).
-    - Statistics of the current battle (available classes).
+    - <details>
+        <summary>Statistics of the gamers list (account).</summary>
+        
+        ![Statistics page photo 1](docs/gamers.jpg)
+        
+      </details>
+    - <details>
+        <summary>Statistics of the current battle (available classes).</summary>
+        
+        ![Statistics page photo 2](docs/statistic.jpg)
 
-> First ordered list item
-    1. Ordered sub-list
-        1. Ordered sub-list
-    * Another item
-        * Unordered sub-list. 
-            1. Ordered sub-list
-
-1. Actual numbers don't matter, just that it's a number
+      <details>
