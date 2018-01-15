@@ -1,4 +1,4 @@
-# Hearthstone-statistic [![Build status](https://ci.appveyor.com/api/projects/status/99yn4qa10tegbyc9?svg=true)](https://ci.appveyor.com/project/1271/hearthstone-statistic)
+# Hearthstone-statistic [![Build status](https://ci.appveyor.com/api/projects/status/99yn4qa10tegbyc9?svg=true)](https://ci.appveyor.com/project/1271/hearthstone-statistic) [![Maintainability](https://api.codeclimate.com/v1/badges/7479ab3604688f30b786/maintainability)](https://codeclimate.com/github/StixoTvorec/Hearthstone-statistic/maintainability)
 
 ## Simple heartstone statistic helper for streamers
 
