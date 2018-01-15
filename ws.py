@@ -84,7 +84,7 @@ def refresh_active_battle_counter(client=None):
 
     for u in clients:
         clients[u].call('updateActiveBattleCounter', **{
-            'counter': MyWebSocket.active_battle_counter
+            'activeBattleCounter': MyWebSocket.active_battle_counter
         })
 
 
@@ -116,9 +116,9 @@ def set_gamers(*args, **kwargs):
 
 
 def set_active_battle_counter(*args, **kwargs):
-    if kwargs.get('counter', False):
-        print('set active battle counter: ', kwargs.get('counter'))
-        counter = kwargs.get('counter')
+    if kwargs.get('activeBattleCounter', False):
+        print('set active battle counter: ', kwargs.get('activeBattleCounter'))
+        counter = kwargs.get('activeBattleCounter')
         MyWebSocket.active_battle_counter = counter
 
         refresh_active_battle_counter()

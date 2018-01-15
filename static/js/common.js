@@ -23,114 +23,82 @@
     const url = 'ws://' + window.location.host + '/ws/';
     const RPC = WSRPC(url, 2000);
 
-    RPC.addRoute('whoAreYou', (data) => {
-        return window.navigator.userAgent;
-    });
-
-    RPC.addRoute('updateBattles', (data) => {
-        console.log('updateBattles route');
-        console.log(data);
-        if(typeof data['battles'] !== 'undefined') {
-            vm.battles = data['battles'];
-        }
-    });
-
-    RPC.addRoute('updateGamers', (data) => {
-        console.log('updateGamers route');
-        console.log(data);
-        if(typeof data['gamers'] !== 'undefined') {
-            vm.gamers = data['gamers'];
-        }
-    });
-
-    RPC.addRoute('updateActiveBattle', (data) => {
-        console.log('updateActiveBattle route');
-        console.log(data);
-        if(typeof data['activeBattle'] !== 'undefined') {
-            vm.activeBattle = data['activeBattle'];
-        }
-    });
-
-    RPC.addRoute('updateActiveBattleCounter', (data) => {
-        console.log('updateActiveBattleCounter route');
-        console.log(data);
-        if(typeof data['counter'] !== 'undefined') {
-            vm.activeBattleCounter = data['counter'];
-        }
-    });
-
-    // current battle statistic
-    if(document.getElementById('statistic')) {
-        vm = new Vue({
-            el: '#statistic',
-            data: {
-                battles: [],
-                gamers: [],
-                activeBattle: 0,
-                activeBattleCounter: [0, 0]
-            },
-            methods: {
-            },
-            mounted() {
-                this.$nextTick(() => {
-                    forceUpdate();
-                });
-            }
-        });
-        console.log(vm);
-        console.log(vm.gamers);
-    }
-
-    // all gamers list
-    if(document.getElementById('gamers')) {
-        vm = new Vue({
-            el: '#gamers',
-            data: {
-                battles: [],
-                gamers: [],
-                activeBattle: 0,
-                activeBattleCounter: [0, 0]
-            },
-            methods: {},
-            mounted() {
-                this.$nextTick(() => {
-                    forceUpdate();
-                });
-            }
-        });
-    }
-
-    // index file, main config
-    if(document.getElementById('config')) {
-        vm = new Vue({
-            el: '#config',
+    function getDefaultVueConfig(el, nextTick) {
+        nextTick = nextTick || function () {
+            forceUpdate();
+        };
+        return {
+            el: el,
             data: {
                 battles: [],
                 gamers: [],
                 activeBattle: 0,
                 activeBattleCounter: [0, 0],
-                classes: classes,
+                classes: classes
             },
             methods: {
+            },
+            mounted() {
+                this.$nextTick(nextTick);
+            }
+        };
+    }
+
+    function addRoute(route, dataKey) {
+        RPC.addRoute(route, (data) => {
+            if(typeof data[dataKey] !== 'undefined') {
+                vm[dataKey] = data[dataKey];
+            }
+        });
+    }
+    function callRoute(route, data) {
+        return RPC.call(route, data)
+            .then((data) => {
+                successMessage();
+            }, (error) => {
+                errorMessage(error);
+            }).done();
+    }
+
+    addRoute('updateBattles', 'battles');
+    addRoute('updateGamers', 'gamers');
+    addRoute('updateActiveBattle', 'activeBattle');
+    addRoute('updateActiveBattleCounter', 'activeBattleCounter');
+
+    // current battle statistic
+    if(document.getElementById('statistic')) {
+        vm = new Vue(getDefaultVueConfig('#statistic'));
+    }
+
+    // all gamers list
+    if(document.getElementById('gamers')) {
+        vm = new Vue(getDefaultVueConfig('#gamers'));
+    }
+
+    // index file, main config
+    if(document.getElementById('config')) {
+        let vueConfig = getDefaultVueConfig('#config', function () {
+            let firstElemSelector = '.tabs>ul>li>a';
+            let selector = window.location.hash ? 'a[href="' + window.location.hash + '"]' : firstElemSelector;
+            let elem = document.querySelector(selector);
+            if (elem) {
+                elem.click();
+            }
+            else {
+                document.querySelector(firstElemSelector).click();
+            }
+            forceUpdate();
+        });
+        vueConfig['methods'] = {
                 updateGamers: function () {
-                    RPC.call('setGamers', {gamers: this.gamers})
-                        .then((data) => {
-                            successMessage();
-                        }, (error) => {
-                            errorMessage(error);
-                        }).done();
+                    callRoute('setGamers', {gamers: this.gamers});
                 },
                 forceUpdate: forceUpdate,
                 setActiveBattle: function () {
-                    RPC.call('setActiveBattle', {
+                    callRoute('setActiveBattle', {
                             activeBattle: this.activeBattle,
                             battles: this.battles
-                        })
-                        .then((data) => {
-                            successMessage();
-                        }, (error) => {
-                            errorMessage(error);
-                        }).done();
+                        });
                 },
                 addBattle: function () {
                     this.battles.push({'gamers': [0, 1]});
@@ -143,35 +111,13 @@
                         .concat(this.battles.slice(index + 1));
                 },
                 saveActiveBattleCounter: function () {
-                    RPC.call('setActiveBattleCounter', {
-                            'counter': this.activeBattleCounter
-                        })
-                        .then((data) => {
-                            successMessage();
-                        }, (error) => {
-                            errorMessage(error);
-                        }).done()
+                    callRoute('setActiveBattleCounter', {'activeBattleCounter': this.activeBattleCounter});
                 },
                 changeStatus: function (cl) {
                     cl.status = (cl.status > 1 ? 0 : parseInt(cl.status) + 1);
-                    console.log(cl.status);
                 }
-            },
-            mounted() {
-                this.$nextTick(() => {
-                    let firstElemSelector = '.tabs>ul>li>a';
-                    let selector = window.location.hash ? 'a[href="' + window.location.hash + '"]' : firstElemSelector;
-                    const elem = document.querySelector(selector);
-                    if (elem) {
-                        elem.click();
-                    }
-                    else {
-                        document.querySelector(firstElemSelector).click();
-                    }
-                    forceUpdate();
-                });
-            }
-        });
+            };
+        vm = new Vue(vueConfig);
     }
 
     RPC.addEventListener('onconnect', (e) => {
@@ -180,22 +126,9 @@
     RPC.connect();
 
     function forceUpdate() {
-        RPC.call('updateMe', {}).then((data) => {
-                successMessage();
-            }, (error) => {
-                errorMessage(error);
-            }).done();
+        callRoute('updateMe', {});
     }
 
-    function post(url, method, data) {
-        data = data || {};
-        method = method || 'POST';
-        return fetch(url, {
-            credentials: 'include',
-            method: method,
-            body: JSON.stringify(data)
-        });
-    }
     function successMessage(message) {
         showNotify('success', message || 'Success update!');
     }
