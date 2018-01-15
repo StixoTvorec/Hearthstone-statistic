@@ -17,7 +17,7 @@
                 <div class="name">
                     {{ gamers[gamer].name }}
                 </div>
-                <div v-for="c in gamers[gamer].classes" class="class" :class="{'class-lose': !c.available}">
+                <div v-for="c in gamers[gamer].classes" class="class" @status="c.status" :class="{'class-lose': c.status == '0', 'class-win': c.status == '2'}">
                     <i :class="c.class"></i>
                 </div>
             </div>

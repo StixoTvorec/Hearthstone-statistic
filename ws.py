@@ -1,11 +1,13 @@
 #!/usr/bin/env /usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import logging
 import os
+import subprocess
+import sys
+
 from tornado import web, httpserver, ioloop
 from wsrpc import WebSocket
-import sys
-import logging
 
 allowFork = False
 project_root = os.getcwd()
@@ -23,22 +25,10 @@ class MyWebSocket(WebSocket):
         {
             'name': '',
             'active': True,
-            'classes': [
+            'classes': 4 * [
                 {
                     'class': '',
-                    'available': True
-                },
-                {
-                    'class': '',
-                    'available': True
-                },
-                {
-                    'class': '',
-                    'available': True
-                },
-                {
-                    'class': '',
-                    'available': True
+                    'status': 1  # 1 - default, 2 - win, 0 - fail
                 }
             ]
         }
@@ -170,6 +160,8 @@ MyWebSocket.ROUTES['setActiveBattleCounter'] = set_active_battle_counter
 if __name__ == "__main__":
 
     print('Starting server: %s:%d' % (options['listen'], int(options['port'])), file=sys.stdout)
+
+    # subprocess.call('explorer "http://%s:%d"' % (options['listen'], int(options['port'])), shell=False)
 
     if allowFork:
         try:

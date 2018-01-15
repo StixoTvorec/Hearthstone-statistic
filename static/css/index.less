@@ -64,6 +64,31 @@
           top: .2em;
         }
       }
+      &.new-checkboxes {
+        input + .button {
+          background-color: rgba(0, 192, 11, 0.68);
+          &:after {
+            content: '✓';
+            display: block;
+            position: absolute;
+            left: .3em;
+            top: .2em;
+          }
+        }
+        input[value="1"] + .button {
+          background-color: #ffeebb;
+          &:after {
+            content: '';
+          }
+        }
+        input[value="0"] + .button {
+          background-color: #ff7983;
+          &:after {
+            content: 'x';
+            left: .4em;
+          }
+        }
+      }
     }
   }
   ._classes .select-input {

@@ -15,32 +15,15 @@
       background-size: contain;
       background-repeat: no-repeat;
     }
-    &.druid:after {
-      background-image: url("/img/classes/druid.png");
+    @game-classes: druid, hunter, mage, paladin, priest, rogue, shaman, warlock, warrior;
+    .make-game-classes(@i: length(@game-classes)) when (@i > 0) {
+      .make-game-classes(@i - 1);
+      @cl: extract(@game-classes, @i);
+      &.@{cl}:after {
+        @c: "/img/classes/@{cl}.png";
+        background-image: url(@c);
+      }
     }
-    &.hunter:after {
-      background-image: url("/img/classes/hunter.png");
-    }
-    &.mage:after {
-      background-image: url("/img/classes/mage.png");
-    }
-    &.paladin:after {
-      background-image: url("/img/classes/paladin.png");
-    }
-    &.priest:after {
-      background-image: url("/img/classes/priest.png");
-    }
-    &.rogue:after {
-      background-image: url("/img/classes/rogue.png");
-    }
-    &.shaman:after {
-      background-image: url("/img/classes/shaman.png");
-    }
-    &.warlock:after {
-      background-image: url("/img/classes/warlock.png");
-    }
-    &.warrior:after {
-      background-image: url("/img/classes/warrior.png");
-    }
+    .make-game-classes();
   }
 }

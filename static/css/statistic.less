@@ -41,11 +41,21 @@
       .name {
         top: -1.4em;
       }
+      .class:after {
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -30%;
+      }
     }
     .user-2 {
       bottom: @base-offset;
       .name {
         bottom: -1.4em;
+      }
+      .class:after {
+        left: 50%;
+        transform: translateX(-50%);
+        top: -30%;
       }
     }
     .class {
@@ -54,19 +64,34 @@
       display: inline-block;
       width: 25%;
       text-align: center;
-      &.class-lose:after {
+      //&.class-lose:after {
+      //  content: '';
+      //  display: block;
+      //  position: absolute;
+      //  width: .2em;
+      //  height: 90%;
+      //  transform: rotateZ(.5rad);
+      //  top: .1em;
+      //  left: 46%;
+      //  background-color: @gamers-color;
+      //}
+      &:after {
         content: '';
-        display: block;
         position: absolute;
-        width: .2em;
-        height: 90%;
-        transform: rotateZ(.5rad);
-        top: .1em;
-        left: 46%;
-        background-color: @gamers-color;
+        width: 1em;
+        height: 1em;
+        background-size: contain;
+        background-repeat: no-repeat;
       }
     }
   }
+  .class-win:after {
+    background: url("/img/ok-status.png");
+  }
+  .class-lose:after {
+    background: url("/img/fail-status.png");
+  }
+
   .counters {
     position: absolute;
     height: 100%;

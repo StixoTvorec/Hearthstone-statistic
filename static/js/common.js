@@ -151,6 +151,10 @@
                         }, (error) => {
                             errorMessage(error);
                         }).done()
+                },
+                changeStatus: function (cl) {
+                    cl.status = (cl.status > 1 ? 0 : parseInt(cl.status) + 1);
+                    console.log(cl.status);
                 }
             },
             mounted() {

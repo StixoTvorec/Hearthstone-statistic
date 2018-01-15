@@ -41,9 +41,9 @@
                                                     <select v-model="cl.class">
                                                         <option v-for="i in classes">{{ i }}</option>
                                                     </select>
-                                                </div><label class="">
-                                                    <input class="is-hidden" type="checkbox" v-model="cl.available"
-                                                    ><a class="button is-light"></a>
+                                                </div><label class="new-checkboxes">
+                                                    <input class="is-hidden" type="hidden" :value="cl.status"
+                                                    ><a class="button is-light" @click="changeStatus(cl)"></a>
                                                 </label>
                                             </div>
                                         </div>

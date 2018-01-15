@@ -1,4 +1,4 @@
-# Hearthstone-statistic
+# Hearthstone-statistic [![Build status](https://ci.appveyor.com/api/projects/status/99yn4qa10tegbyc9?svg=true)](https://ci.appveyor.com/project/1271/hearthstone-statistic)
 
 ## Simple heartstone statistic helper for streamers
 
@@ -25,4 +25,7 @@
         
         ![Statistics page photo 2](docs/statistic.jpg)
 
-      <details>
+      </details>
+
+### Sponsor
+[![NugsBet](docs/nutsbet-logo.png)](https://nutsbet2.com)
