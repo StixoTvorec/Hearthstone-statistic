@@ -17,7 +17,7 @@ options = {
     'port': 8080,
     'listen': '127.0.0.1'
 }
-__version__ = '1.2.2'
+__version__ = '1.2.3'
 
 
 class MyWebSocket(WebSocket):
@@ -36,6 +36,7 @@ class MyWebSocket(WebSocket):
             ]
         }
     ]
+    camera = 1
 
     @staticmethod
     def get_clients():
@@ -100,6 +101,15 @@ def refresh_battles(client=None):
         })
 
 
+def refresh_camera(client=None):
+    clients = _get_clients(client)
+
+    for u in clients:
+        clients[u].call('updateCameraVisible', **{
+            'camera': MyWebSocket.camera
+        })
+
+
 def refresh_active_battle(client=None):
     clients = _get_clients(client)
 
@@ -110,27 +120,28 @@ def refresh_active_battle(client=None):
 
 
 def set_gamers(*args, **kwargs):
-    if kwargs.get('gamers', False):
+    value = kwargs.get('gamers', False)
+    if value:
         print('set gamers')
-        gamers = kwargs.get('gamers')
-        MyWebSocket.gamers = gamers
+        MyWebSocket.gamers = value
 
         refresh_gamers()
 
 
 def set_active_battle_counter(*args, **kwargs):
-    if kwargs.get('activeBattleCounter', False):
-        print('set active battle counter: ', kwargs.get('activeBattleCounter'))
-        counter = kwargs.get('activeBattleCounter')
-        MyWebSocket.active_battle_counter = counter
+    value = kwargs.get('activeBattleCounter', False)
+    if value:
+        print('set active battle counter: ', value)
+        MyWebSocket.active_battle_counter = value
 
         refresh_active_battle_counter()
 
 
 def set_active_battle(*args, **kwargs):
-    if kwargs.get('activeBattle', -1) >= 0:
-        print('set active battle index: ', kwargs.get('activeBattle'))
-        MyWebSocket.active_battle = kwargs.get('activeBattle')
+    value = int(kwargs.get('activeBattle', -1))
+    if value >= 0:
+        print('set active battle index: ', value)
+        MyWebSocket.active_battle = value
 
         refresh_active_battle()
 
@@ -143,6 +154,15 @@ def set_active_battle(*args, **kwargs):
         refresh_battles()
 
 
+def set_camera_visible(*args, **kwargs):
+    value = int(kwargs.get('camera', -1))
+    if value >= 0:
+        print('set camera visible: ', value)
+        MyWebSocket.camera = value
+
+        refresh_camera()
+
+
 def update_me(*args, **kwargs):
     if isinstance(args[0], WebSocket):
 
@@ -153,12 +173,14 @@ def update_me(*args, **kwargs):
         refresh_battles(client)
         refresh_active_battle(client)
         refresh_active_battle_counter(client)
+        refresh_camera(client)
 
 
 MyWebSocket.ROUTES['updateMe'] = update_me
 MyWebSocket.ROUTES['setGamers'] = set_gamers
 MyWebSocket.ROUTES['setActiveBattle'] = set_active_battle
 MyWebSocket.ROUTES['setActiveBattleCounter'] = set_active_battle_counter
+MyWebSocket.ROUTES['setCameraVisible'] = set_camera_visible
 
 
 def check_version():

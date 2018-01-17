@@ -78,4 +78,30 @@
   .cam-overlay-2 {
     right: @gamers-list-width + 20px;
   }
+  .bg-black {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0);
+    transition: .2s;
+  }
+  &.without-camera .bg-black {
+    background: rgba(0,0,0,.4);
+  }
+  .please-wait-text {
+    position: absolute;
+    font-size: 5em;
+    text-transform: uppercase;
+    color: @gamers-color;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    top: 50%;
+    opacity: 0;
+    &.visible {
+      opacity: 1;
+    }
+  }
 }

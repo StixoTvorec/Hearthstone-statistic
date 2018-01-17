@@ -125,6 +125,21 @@
                                 </h3>
                             </div>
                         </div>
+                        <!--
+                        <div class="camera-btn">
+                            <h3 class="">Enable camera overlays</h3>
+                            <form class="radio-btns select-input">
+                                <label>
+                                    <input class="is-hidden" type="radio" value="1" name="camera" v-model="camera">
+                                    <a class="button">ON</a>
+                                </label>
+                                <label>
+                                    <input class="is-hidden" type="radio" value="0" name="camera" v-model="camera">
+                                    <a class="button">OFF</a>
+                                </label>
+                            </form>
+                        </div>
+                        -->
                         <div v-if="gamers.length" class="current-batle has-text-centered">
                             <a class="button" @click="saveActiveBattleCounter()">Save</a>
                         </div>
@@ -140,6 +155,7 @@
             <div class="row">
             <b class="btn-group">
                 <a class="button is-primary dotted" target="_blank" href="/gamers.html"><span>gamers</span></a>
+                <a class="button is-primary dotted" target="_blank" href="/gamers.html#without-camera"><span>gamers without camera</span></a>
                 <a class="button is-primary dotted" target="_blank" href="/statistic.html"><span>statistic</span></a>
             </b>
             </div>

@@ -34,7 +34,8 @@
                 gamers: [],
                 activeBattle: 0,
                 activeBattleCounter: [0, 0],
-                classes: classes
+                classes: classes,
+                camera: 1
             },
             methods: {
             },
@@ -64,6 +65,7 @@
     addRoute('updateGamers', 'gamers');
     addRoute('updateActiveBattle', 'activeBattle');
     addRoute('updateActiveBattleCounter', 'activeBattleCounter');
+    addRoute('updateCameraVisible', 'camera');
 
     // current battle statistic
     if(document.getElementById('statistic')) {
@@ -72,14 +74,22 @@
 
     // all gamers list
     if(document.getElementById('gamers')) {
-        vm = new Vue(getDefaultVueConfig('#gamers'));
+        let hash = window.location.hash;
+        hash = (hash && hash === '#without-camera');
+        let vueConfig = getDefaultVueConfig('#gamers');
+        vueConfig.data.hash = hash;
+        if (hash) {
+            vueConfig.data.camera = 0;
+        }
+        vm = new Vue(vueConfig);
     }
 
     // index file, main config
     if(document.getElementById('config')) {
         let vueConfig = getDefaultVueConfig('#config', function () {
             let firstElemSelector = '.tabs>ul>li>a';
-            let selector = window.location.hash ? 'a[href="' + window.location.hash + '"]' : firstElemSelector;
+            let hash = window.location.hash;
+            let selector = hash ? 'a[href="' + hash + '"]' : firstElemSelector;
             let elem = document.querySelector(selector);
             if (elem) {
                 elem.click();
@@ -111,7 +121,9 @@
                         .concat(this.battles.slice(index + 1));
                 },
                 saveActiveBattleCounter: function () {
+                    console.log(this.camera);
                     callRoute('setActiveBattleCounter', {'activeBattleCounter': this.activeBattleCounter});
+                    callRoute('setCameraVisible', {camera: this.camera});
                 },
                 changeStatus: function (cl) {
                     cl.status = (cl.status > 1 ? 0 : parseInt(cl.status) + 1);

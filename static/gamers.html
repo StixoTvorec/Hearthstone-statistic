@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/css/main.css">
 </head>
 <body>
-<section class="content-wrapper fill-height" id="gamers">
+<section class="content-wrapper fill-height" id="gamers" :class="{'without-camera': (!camera || hash)}">
     <div class="list">
         <div v-for="(gamer, index) in gamers" v-if="index%2 == 0" class="user" :class="{'user-lose': !gamer.active}">
             <div class="image">
@@ -32,8 +32,10 @@
             </div>
         </div>
     </div>
-    <div class="cam-overlay cam-overlay-1"><img src="/img/cam-overlay.png"></div>
-    <div class="cam-overlay cam-overlay-2"><img src="/img/cam-overlay.png"></div>
+    <div v-if="(camera && !hash)" class="cam-overlay cam-overlay-1"><img src="/img/cam-overlay.png"></div>
+    <div v-if="(camera && !hash)" class="cam-overlay cam-overlay-2"><img src="/img/cam-overlay.png"></div>
+    <div class="bg-black"></div>
+    <div class="please-wait-text" :class="{'visible': (!camera || hash)}">Мы скоро вернемнся</div>
 </section>
 
 <script src="/js/q.min.js"></script>
