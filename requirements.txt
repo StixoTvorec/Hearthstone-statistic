@@ -1,2 +1,4 @@
 wsrpc-tornado>=0.5.6
 tornado==4.4.3
+requests>=2.14
+packaging>=16.8

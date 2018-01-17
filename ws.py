@@ -1,11 +1,13 @@
 #!/usr/bin/env /usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import json
 import logging
 import os
-import subprocess
 import sys
 
+from packaging import version
+from requests import get
 from tornado import web, httpserver, ioloop
 from wsrpc import WebSocket
 
@@ -15,6 +17,7 @@ options = {
     'port': 8080,
     'listen': '127.0.0.1'
 }
+__version__ = '1.2.2'
 
 
 class MyWebSocket(WebSocket):
@@ -157,11 +160,19 @@ MyWebSocket.ROUTES['setGamers'] = set_gamers
 MyWebSocket.ROUTES['setActiveBattle'] = set_active_battle
 MyWebSocket.ROUTES['setActiveBattleCounter'] = set_active_battle_counter
 
+
+def check_version():
+    api_url = 'https://api.github.com/repos/StixoTvorec/Hearthstone-statistic/releases/latest'
+    api_content = json.loads(get(api_url).text)
+    tag_name = api_content['tag_name']
+    if version.parse(tag_name) > version.parse(__version__):
+        download_addr = api_content['assets'][0]
+        print('Found new version %s !\nDownload here:\n%s' % (tag_name, download_addr['browser_download_url']))
+
+
 if __name__ == "__main__":
 
     print('Starting server: %s:%d' % (options['listen'], int(options['port'])), file=sys.stdout)
-
-    # subprocess.call('explorer "http://%s:%d"' % (options['listen'], int(options['port'])), shell=False)
 
     if allowFork:
         try:
@@ -171,6 +182,8 @@ if __name__ == "__main__":
                 sys.exit(0)
         except Exception as e:
             print('Could not daemonize, script will run in foreground. Error was: "%s"' % str(e), file=sys.stderr)
+
+    check_version()
 
     logging.getLogger('tornado.access').disabled = True
     http_server = httpserver.HTTPServer(web.Application((
