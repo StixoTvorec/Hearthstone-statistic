@@ -17,7 +17,7 @@ options = {
     'port': 8080,
     'listen': '127.0.0.1'
 }
-__version__ = '1.2.3'
+__version__ = '1.3.0'
 
 
 class MyWebSocket(WebSocket):
