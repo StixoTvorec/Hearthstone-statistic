@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import sys
+import webbrowser
 
 from packaging import version
 from requests import get
@@ -17,7 +18,7 @@ options = {
     'port': 8080,
     'listen': '127.0.0.1'
 }
-__version__ = '1.3.0'
+__version__ = '1.3.1'
 
 
 class MyWebSocket(WebSocket):
@@ -204,6 +205,8 @@ if __name__ == "__main__":
                 sys.exit(0)
         except Exception as e:
             print('Could not daemonize, script will run in foreground. Error was: "%s"' % str(e), file=sys.stderr)
+
+    webbrowser.open('http://%s:%d' % (options['listen'], int(options['port'])))
 
     check_version()
 
